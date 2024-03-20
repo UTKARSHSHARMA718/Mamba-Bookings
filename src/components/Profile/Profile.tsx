@@ -1,13 +1,18 @@
 'use client'
-import React, { useState } from 'react';
+
+import React from 'react';
+import { AiOutlineMenu } from "react-icons/ai"
 
 import Avatar from '../Avatar/Avatar';
 import UserMenuDropDown from '@/containers/UserMenuDropDown/UserMenuDropDown';
-import { AiOutlineMenu } from "react-icons/ai"
-import useUserDropdown from '@/hooks/useUserDropdown';
 import useOutsideClick from '@/hooks/useOutsideClick';
+import useUserDropdown from '@/hooks/useUserDropdown';
 
-const Profile = () => {
+type ProfileTypes = {
+  isUserLoggedIn: boolean;
+}
+
+const Profile: React.FC<ProfileTypes> = ({ isUserLoggedIn }) => {
   // TODO: I think we should remove this
   const { isOpen, onOpen, onClose } = useUserDropdown();
   const { ref, shouldNotConsiderRef } = useOutsideClick({
@@ -24,7 +29,7 @@ const Profile = () => {
   };
 
   return (
-    <div ref={shouldNotConsiderRef} className='p-2 relative cursor-pointer border rounded-3xl flex gap-3 justify-center items-center' onClick={toggleMenu}
+    <div ref={shouldNotConsiderRef} className='p-2 relative cursor-pointer border rounded-3xl flex gap-3 justify-center items-center hover:shadow-md' onClick={toggleMenu}
     >
       <AiOutlineMenu />
       <div>
@@ -32,7 +37,7 @@ const Profile = () => {
       </div>
       {
         isOpen &&
-        <UserMenuDropDown {... { ref }} />
+        <UserMenuDropDown {... { ref, isUserLoggedIn }} />
       }
     </div>
   )

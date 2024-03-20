@@ -1,34 +1,25 @@
-import { SELECTED_CATEGORY } from '@/constants/const';
-import useQueryParams from '@/hooks/useQueryParams';
 import React from 'react'
 import { IconType } from 'react-icons';
+
+import { RENT_MODAL_DATA, SELECTED_CATEGORY } from '@/constants/const';
+import useLocalStoarge from '@/hooks/useLocalStorage';
+import { RENT_MODAL_DATA_STRUCTURE } from '../../constants/const';
+
 
 type CategoryType = {
     icon: IconType;
     label: string;
     isSelected: boolean;
-    setSelectedCategory: (v: string) => void;
-    selectedCategory: string;
+    onClick: () => void;
 }
 
 const CategoryInput: React.FC<CategoryType> =
-    ({ icon: Icon, label, isSelected, setSelectedCategory, selectedCategory }) => {
-        const { handleClick } = useQueryParams({ isMultiSelect: false });
+    ({ icon: Icon, label, isSelected, onClick = () => { } }) => {
         const isSelectedStyles = isSelected ? 'border-black' : 'border-slate-200';
-
-        const handleOnCategorySelect = () => {
-            handleClick(label, SELECTED_CATEGORY);
-            if (selectedCategory === label) {
-                setSelectedCategory("");
-                return;
-            }
-            setSelectedCategory(label);
-
-        }
 
         return (
             <div
-                onClick={handleOnCategorySelect}
+                {...{ onClick }}
                 className={`flex flex-col cursor-pointer gap-4 p-2 justify-start border-[1px] ${isSelectedStyles} rounded-lg`}>
                 <Icon size={24} />
                 <div>

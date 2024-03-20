@@ -33,7 +33,6 @@ const RegisterModal = () => {
         try {
             const url = API + SIGNUP;
             let res = await axios.post(url, payload);
-            console.log({ res })
             // also check for the isOk or status code of the response
             //@ts-ignore
             if (res?.ok) {

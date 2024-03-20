@@ -1,12 +1,15 @@
+"use server";
+
 import { getServerSession } from "next-auth";
-import { authOptions } from "@/app/api/auth/[...nextAuth]";
+import { authOptions } from "../../pages/api/auth/[...nextauth]";
 import prisma from "@/libs/prismaDB";
+import { SafeUser } from "@/types/DataBaseModes/DataBaseModes";
 
 const getSession = async () => {
   return await getServerSession(authOptions);
 };
 
-export const getCurrentUser = async () => {
+export const getCurrentUser: () => Promise<SafeUser | null> = async () => {
   try {
     const session = await getSession();
 
@@ -26,8 +29,8 @@ export const getCurrentUser = async () => {
 
     return {
       ...user,
-      createdAt: user?.createdAt?.toISOString,
-      updatedAt: user?.updatedAt?.toISOString,
+      createdAt: user?.createdAt?.toISOString(),
+      updatedAt: user?.updatedAt?.toISOString(),
     };
   } catch (err: any) {
     console.error("Error while getting current User" + err);

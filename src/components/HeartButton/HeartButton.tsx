@@ -1,47 +1,29 @@
 'use client'
 
-import { getCurrentUser } from "@/actions/getCurrentUser";
-import useMarkFavourite from "@/hooks/useMarkFavourite";
-import { User } from "@prisma/client";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
 
-type HeartTypes = {
-  listingId: number;
-  currentUser: User | null;
+import useMarkFavourite from "@/hooks/useMarkFavourite";
+import { SafeUser } from "@/types/DataBaseModes/DataBaseModes";
+
+type HeartButtonProps = {
+  listingId: string;
+  currentUser: SafeUser | null;
 };
 
-const HeartButton: React.FC<HeartTypes> = ({
+const HeartButton: React.FC<HeartButtonProps> = ({
   listingId,
   currentUser,
 }) => {
-  const hasFavourite = true;
-
-  // const [currentUser, setCurrentUser] = useState(null);
-  // TODO: try using useOptimistic here
-  // const { hasFavourite, markFavorite, isLoading, error } =
-  //   useMarkFavourite({ listingId, currentUser });
-
-
-  // useEffect(() => {
-  //   const getCurrentUserDetails = async () => {
-  //     try {
-  //       const data = await getCurrentUser();
-  //       if (!data) {
-  //         setCurrentUser(data);
-  //       }
-  //     } catch (err) {
-  //       console.log(err);
-  //     }
-  //   }
-
-  //   getCurrentUserDetails();
-  // }, [])
+  const { hasFavourite, markFavorite } =
+    useMarkFavourite({ listingId, currentUser });
 
   return <>
-    {hasFavourite ? 
-    <AiFillHeart size={24} className="text-red-500 cursor-pointer" /> : 
-    <AiOutlineHeart size={24} className="text-white cursor-pointer" />}
+    {hasFavourite ?
+      //@ts-ignore
+      <AiFillHeart size={24} className="text-red-500 cursor-pointer" onClick={markFavorite} /> :
+      //@ts-ignore
+      <AiOutlineHeart size={24} className="text-white cursor-pointer" onClick={markFavorite} />}
   </>;
 };
 

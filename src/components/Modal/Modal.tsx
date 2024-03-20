@@ -73,9 +73,9 @@ const Modal: React.FC<ModalProps> = ({
                     items-center
                 '>
                     {/* Container */}
-                    <div 
-                    style={{zIndex:"9999999"}}
-                    className="
+                    <div
+                        style={{ zIndex: "9999999" }}
+                        className="
                         flex
                         flex-col
                         justify-between
@@ -153,11 +153,12 @@ const Modal: React.FC<ModalProps> = ({
                                         onClick={handleSecoundaryAction}
                                         {...{ disabled }}
                                     />}
-                                <Button
-                                    label={actionLabel}
-                                    onClick={handleOnSubmit}
-                                    {...{ disabled }}
-                                />
+                                {!!actionLabel && handleOnSubmit &&
+                                    <Button
+                                        label={actionLabel}
+                                        onClick={handleOnSubmit}
+                                        {...{ disabled }}
+                                    />}
                             </div>
                             {footer}
                         </div>

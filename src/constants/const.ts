@@ -16,7 +16,7 @@ import { MdOutlineVilla } from "react-icons/md";
 
 export const ROUNDES_FOR_HASHING_PASSWORD = 12;
 export const CREDENTIALS = "credentials";
-export const COMPANY_NAME = "Airbnb";
+export const COMPANY_NAME = "Mamba Bookings";
 export const CATEGORIES = "categories";
 export const SELECTED_CATEGORY = "selected-category";
 
@@ -98,8 +98,53 @@ export const categoriesToRender = [
   },
 ];
 
+// export const TILE_LAYER_URL =
+//   "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png";
+// export const TILE_LAYER_ATTRIBUTION =
+//   '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
 export const TILE_LAYER_URL =
   "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png";
 export const TILE_LAYER_ATTRIBUTION =
   '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
 export const CENTER_COORDINATES = [51, -0.09];
+
+export const RENT_MODAL_DATA = "user-data";
+export const RENT_MODAL_DATA_STRUCTURE = {
+  category: "",
+  location: null,
+  guestCount: 1,
+  roomCount: 1,
+  bathroomCount: 1,
+  imageSrc: "",
+  price: 1,
+  title: "",
+  description: "",
+};
+
+export const SELECTED_DATE_CELL_COLOUR = "#262626";
+
+export const VALID_RENT_SCREEN = [0, 1, 2, 3, 4, 5];
+
+export const initialDateRange = {
+  startDate: new Date(),
+  endDate: new Date(),
+  key: "selection",
+};
+
+export const MAX_ROOM_LIMIT = 50;
+export const MAX_GUEST_LIMIT = 30;
+export const MAX_BATHROOM_LIMIT = 10;
+export const MIN_ROOM_LIMIT = 1;
+export const MIN_GUEST_LIMIT = 1;
+export const MIN_BATHROOM_LIMIT = 1;
+
+export const searchFilters = [
+  "guest",
+  "bathrooms",
+  "rooms",
+  "location",
+  "startDate",
+  "endDate",
+];
+
+export const RENT_MODAL = "rent-modal";

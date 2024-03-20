@@ -39,27 +39,18 @@ const LoginModal = () => {
 
     const onSubmit: SubmitHandler<FieldValues> = async (payload) => {
         setIsLoading(true);
-
-        console.log({payload})
         try {
-            // const url = API + LOGIN;
             let res = await signIn(CREDENTIALS, {
-                ...payload,
-                callbackUrl: "/dashboard/profile",
+                ...(payload),
                 redirect: false,
-            }, {
-                
-            })
-
-            console.log({res})
+            });
 
             if (res?.ok) {
                 toast.success(LOGGED_IN_MESSAGE);
-                // router?.refresh();
+                router?.refresh();
                 return;
             }
-            // toast.error(LOGGED_IN_FAILED_MESSAGE);            
-            toast.error("hellow rodl");            
+            toast.error(LOGGED_IN_FAILED_MESSAGE);            
         } catch (err) {
             console.log("Error while loging user: " + err)
             toast.error(LOGGED_IN_FAILED_MESSAGE);

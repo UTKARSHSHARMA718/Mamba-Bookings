@@ -1,16 +1,23 @@
-import Heading from '@/components/Headers/Heading';
-import { Listing } from '@prisma/client'
-import Image from 'next/image';
-import React from 'react'
+"use client"
 
-type ListingHeadingAndImageTypes = {
-    data: Listing;
+import React from 'react'
+import Image from 'next/image';
+
+import Heading from '@/components/Headers/Heading';
+import HeartButton from '@/components/HeartButton/HeartButton';
+import { Listing } from '@prisma/client'
+import { SafeUser } from '@/types/DataBaseModes/DataBaseModes';
+import styles from './ListingHeadingAndImage.module.css';
+
+type ListingHeadingAndImage = {
+    currentUser: SafeUser | null;
+    listingData: Listing | null;
 }
 
-const ListingHeadingAndImage: React.FC<ListingHeadingAndImageTypes> = ({
-    data,
+const ListingHeadingAndImage: React.FC<ListingHeadingAndImage> = ({
+    currentUser,
+    listingData,
 }) => {
-    const { imageSrc, title, description } = data;
 
     return (
         <div className={`
@@ -19,15 +26,20 @@ const ListingHeadingAndImage: React.FC<ListingHeadingAndImageTypes> = ({
             p-6
             gap-4
         `}>
-            <Heading
-                heading={title}
-                subHeading={description}
-            />
-            <div className='w-full h-full relative'>
-                <Image src={imageSrc} fill alt={`${title}-image`} 
-                    className='w-full h-full rounded-xl'
+            <>
+                <Heading
+                    heading={listingData?.title}
+                    subHeading={listingData?.description}
                 />
-            </div>
+                <div className='w-full h-full relative'>
+                    <Image src={listingData?.imageSrc || ""} fill alt={`${listingData?.title}-image`}
+                        className='w-full h-full rounded-xl'
+                    />
+                    <div className={styles.heartBtnContainer}>
+                        <HeartButton listingId={listingData?.id || ""}  {...{ currentUser }} />
+                    </div>
+                </div>
+            </>
         </div>
     )
 }

@@ -1,17 +1,14 @@
-'use client'
-
-import React, { useCallback } from 'react'
+import React from 'react'
 import { IconType } from 'react-icons';
 
 import ToolTip from '@/components/ToolTip/ToolTip';
-import useQueryParams from '@/hooks/useQueryParams';
-import { CATEGORIES } from '@/constants/const';
 
 type CategoryBoxProps = {
     label: string;
     isSelected: boolean;
     icon: IconType;
     description: string;
+    onClick: () => void;
 }
 
 const CategoryBox: React.FC<CategoryBoxProps> = ({
@@ -19,6 +16,7 @@ const CategoryBox: React.FC<CategoryBoxProps> = ({
     isSelected,
     icon: Icon,
     description,
+    onClick,
 }) => {
     const isSelectedStyles = isSelected ? {
         borderBottom: "2px solid black",
@@ -28,14 +26,11 @@ const CategoryBox: React.FC<CategoryBoxProps> = ({
         borderBottomLeftRadius: 0,
     } : { borderBottom: "2px solid white", };
 
-    const { handleClick } = useQueryParams({isMultiSelect: true});
-
-
     return (
         <div
             className={`flex flex-col gap-2 justify-center cursor-pointer items-center p-2 ${isSelectedStyles}`}
             style={isSelectedStyles}
-            onClick={() => handleClick(label, CATEGORIES)}
+            {...{ onClick }}
         >
             <Icon size={32} />
             <ToolTip {...{ label, description }} customStyles="text-xs" />

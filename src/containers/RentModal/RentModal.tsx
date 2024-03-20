@@ -3,35 +3,39 @@
 import React, { useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
 import { FieldValues, SubmitHandler, useForm } from 'react-hook-form'
-import { signIn } from 'next-auth/react'
 import { useRouter, useSearchParams } from 'next/navigation'
+import axios from 'axios'
 
 import CategoryInput from '@/components/CategoryInput/CategoryInput'
 import Counter from '@/components/Counter/Counter'
+import CountrySelect from '@/components/CountrySelect/CountrySelect'
 import Heading from '@/components/Headers/Heading'
+import Input from '@/components/Input/Input'
+import Map from '@/components/Map/Map'
 import Modal from '@/components/Modal/Modal'
 import UplaodImage from '@/components/UplaodImage/UplaodImage'
+import useLocalStoarge from '@/hooks/useLocalStorage'
+import useQueryParams from '@/hooks/useQueryParams'
 import useRentModal from '@/hooks/useRentModal'
-import { getSelectedCategory } from '@/libs/utils/util'
-import { API, CREATE, LISTING, LOGIN } from '@/constants/apiEndpoints'
-import { COMPANY_NAME, CREDENTIALS, SELECTED_CATEGORY, categoriesToRender } from '@/constants/const'
-import { LOGGED_IN_FAILED_MESSAGE, LOGGED_IN_MESSAGE, NEW_LISTING_CREATED_MESSAGE, NEW_LISTING_FAILED_MESSAGE } from '@/constants/generalMessage'
 import { STEPS, STEP_TYPES } from '@/enums/RentModalEnum'
-import Map from '@/components/Map/Map'
-import CountrySelect from '@/components/CountrySelect/CountrySelect'
-import { CountrySelectValue } from '@/types/CountrySelect/CountrySelectTypes'
 import { getCountersInfo } from './RentModalConfig'
-import Input from '@/components/Input/Input'
-import axios from 'axios'
+import { CountrySelectValue } from '@/types/CountrySelect/CountrySelectTypes'
+import { compareString } from '@/libs/utils/util'
+import { Resposnse } from '@/types/ApiResponse/ApiResponseTypes'
+import { COMPANY_NAME, RENT_MODAL_DATA, VALID_RENT_SCREEN, categoriesToRender } from '@/constants/const'
+import { API, LISTING } from '@/constants/apiEndpoints'
+import { NEW_LISTING_CREATED_MESSAGE, NEW_LISTING_FAILED_MESSAGE } from '@/constants/generalMessage'
+import { RENT_MODAL_DATA_STRUCTURE } from '../../constants/const';
 
 
 const RentModal = () => {
-
-    const rentModal = useRentModal();
     const router = useRouter();
     const params = useSearchParams();
+
     const [isLoading, setIsLoading] = useState(false);
     const [userMove, setUserMove] = useState(0);
+
+    const rentModal = useRentModal();
 
     const {
         reset,
@@ -66,10 +70,10 @@ const RentModal = () => {
     const title = watch('title')
     const description = watch('description')
 
-    console.log({ location, title, description, price, category })
+    const { storeValues, removeItems, getValues } = useLocalStoarge();
+    const { removeQuery, setQueryParams } = useQueryParams();
 
-
-    const updateStatesValue = (id: string, value: string | number) => {
+    const updateStatesValue = (id: string, value: string | number | CountrySelectValue) => {
         setValue(id, value, {
             shouldDirty: true,
             shouldTouch: true,
@@ -82,10 +86,8 @@ const RentModal = () => {
 
 
     const handleOnUpload = (uploadImagString: string) => {
-        console.log({ uploadImagString })
         updateStatesValue('imageSrc', uploadImagString);
     }
-
 
     const bodyContent = (
         <div className='flex flex-col gap-2 h-full'>
@@ -111,8 +113,7 @@ const RentModal = () => {
                                     label={item.label}
                                     icon={item.icon}
                                     isSelected={category === item?.label}
-                                    selectedCategory={category}
-                                    setSelectedCategory={(value) => updateStatesValue('category', value)}
+                                    onClick={() => updateStatesValue("category", item?.label)}
                                 />
                             })
                         }
@@ -154,8 +155,10 @@ const RentModal = () => {
                         heading="Where is your place located?"
                         subHeading="Help guests find you!"
                     />
-                    <CountrySelect value={location}
-                        onChange={(value) => updateStatesValue('location', value)} />
+                    <CountrySelect
+                        value={location}
+                        onChange={(value) => updateStatesValue('location', value)}
+                    />
                     <Map center={location?.latlgn} />
                 </div>
             }
@@ -218,15 +221,22 @@ const RentModal = () => {
         </div>
     )
 
+    const handleModalClose = () => {
+        reset();
+        removeQuery({ key: ["screen", "rent-modal"] });
+        removeItems(RENT_MODAL_DATA);
+        rentModal.onClose();
+        setUserMove(0);
+    }
 
     const onSubmit: SubmitHandler<FieldValues> = async (payload) => {
         setIsLoading(true);
         try {
-            const url = API + LISTING + CREATE;
-            console.log({payload})
-            let res = await axios.post(url, payload);
-            if (res?.ok) {
+            const url = API + LISTING;
+            let res: Resposnse = await axios.post(url, payload);
+            if (res?.data?.ok) {
                 toast.success(NEW_LISTING_CREATED_MESSAGE);
+                handleModalClose();
                 router?.refresh();
             }
             else {
@@ -242,10 +252,19 @@ const RentModal = () => {
 
     const modifiedOnSubmit = handleSubmit(onSubmit);
 
-    const onClickStep = (type: STEP_TYPES.BACK | STEP_TYPES.NEXT) => {
+    const updateLocalDataFromCurrentState = () => {
+        let updatedData: any = {};
+        for (let key in RENT_MODAL_DATA_STRUCTURE) {
+            updatedData[key] = watch(key)
+        }
+        storeValues(RENT_MODAL_DATA, updatedData);
+    }
+
+    const onClickNextOrBack = (type: STEP_TYPES.BACK | STEP_TYPES.NEXT) => {
 
         if (type === STEP_TYPES.NEXT && userMove === STEPS.PRICE) { // last step
             modifiedOnSubmit({
+                // @ts-ignore
                 category,
                 locationValue: location,
                 guestCount,
@@ -261,9 +280,19 @@ const RentModal = () => {
 
         if (type === STEP_TYPES.NEXT) {
             setUserMove(prev => prev + 1);
+            setQueryParams({
+                queryName: "screen",
+                value: `${userMove + 1}`
+            });
+            updateLocalDataFromCurrentState();
             return;
         }
         setUserMove(prev => prev - 1);
+        setQueryParams({
+            queryName: "screen",
+            value: `${userMove - 1}`
+        });
+        updateLocalDataFromCurrentState();
     }
 
     const getNextStep = () => {
@@ -280,13 +309,21 @@ const RentModal = () => {
         return "Back";
     }
 
-    const handleModalClose = () => {
-        setUserMove(STEPS.CATEGORY);
-        rentModal.onClose();
-    }
-
     useEffect(() => {
-        updateStatesValue('category', getSelectedCategory(params?.get(SELECTED_CATEGORY) as string))
+        let localData = getValues(RENT_MODAL_DATA);
+        if (localData) {
+            for (let key in localData) {
+                updateStatesValue(key, localData[key]);
+            }
+        }
+        const rentModalParams = params?.get("rent-modal");
+        const screen = params?.get("screen");
+        if (rentModalParams && compareString(rentModalParams, "open")) {
+            rentModal?.onOpen();
+        }
+        if (screen && VALID_RENT_SCREEN?.includes(Number(screen))) {
+            setUserMove(+screen);
+        }
     }, [])
 
     return (
@@ -295,10 +332,10 @@ const RentModal = () => {
             isOpen={rentModal.isOpen}
             onClose={handleModalClose}
             actionLabel={getNextStep()}
-            onSubmit={() => onClickStep(STEP_TYPES.NEXT)}
+            onSubmit={() => onClickNextOrBack(STEP_TYPES.NEXT)}
             secondaryActionLabel={getBackStep()}
-            secondaryAction={() => onClickStep(STEP_TYPES.BACK)}
-            title={`${COMPANY_NAME} your home`}
+            secondaryAction={() => onClickNextOrBack(STEP_TYPES.BACK)}
+            title={`Add your home`}
             body={bodyContent}
         />
     )

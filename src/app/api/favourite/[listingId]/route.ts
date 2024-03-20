@@ -37,7 +37,7 @@ export async function PUT(req: NextRequest, {params}: {params: IParams}) {
       { status: 201 }
     );
   } catch (err) {
-    console.log("Erroor: " + err);
+    console.log("Error: " + err);
     return NextResponse?.json(
       { ok: false, message: "Something went wrong!", data: null },
       { status: 500 }
@@ -75,7 +75,7 @@ export async function DELETE(req: NextRequest, {params}: {params: IParams}) {
         { status: 201 }
       );
     } catch (err) {
-      console.log("Erroor: " + err);
+      console.log("Error: " + err);
       return NextResponse?.json(
         { ok: false, message: "Something went wrong!", data: null },
         { status: 500 }

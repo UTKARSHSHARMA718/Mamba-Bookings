@@ -1,10 +1,13 @@
-export const MAX_ROOM_LIMIT = 50;
-export const MAX_GUEST_LIMIT = 30;
-export const MAX_BATHROOM_LIMIT = 10;
-export const MIN_ROOM_LIMIT = 1;
-export const MIN_GUEST_LIMIT = 1;
-export const MIN_BATHROOM_LIMIT = 1;
+import {
+  MAX_BATHROOM_LIMIT,
+  MAX_GUEST_LIMIT,
+  MAX_ROOM_LIMIT,
+  MIN_BATHROOM_LIMIT,
+  MIN_GUEST_LIMIT,
+  MIN_ROOM_LIMIT,
+} from "@/constants/const";
 
+// TODO: please define types here as well
 export const getCountersInfo = ({
   updateStatesValue,
   bathroomCount,

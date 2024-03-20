@@ -3,6 +3,7 @@ import React from 'react'
 import LoginModal from '@/containers/LoginModal/LoginModal'
 import RegisterModal from '@/containers/RegisterModal/RegisterModal'
 import RentModal from '@/containers/RentModal/RentModal'
+import SearchModal from '@/containers/SearchModal/SearchModal'
 
 const ModalsProvider = () => {
 
@@ -11,6 +12,7 @@ const ModalsProvider = () => {
       <RentModal />
       <RegisterModal />
       <LoginModal />
+      <SearchModal />
     </>
   )
 }

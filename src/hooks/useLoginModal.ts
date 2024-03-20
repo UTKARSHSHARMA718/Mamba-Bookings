@@ -1,12 +1,12 @@
 import { create } from "zustand";
 
-type LoginModalPoperties = {
+type LoginModalProps = {
   isOpen: boolean;
   onOpen: () => void;
   onClose: () => void;
 };
 
-const useLoginModal = create<LoginModalPoperties>((set) => {
+const useLoginModal = create<LoginModalProps>((set) => {
   return {
     isOpen: false,
     onOpen: () => set({ isOpen: true }),

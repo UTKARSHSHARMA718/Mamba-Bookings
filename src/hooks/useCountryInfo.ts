@@ -13,7 +13,7 @@ const allCountries = countries?.map((country) => {
 const useCountryInfo = () => {
   const getAll = () => allCountries;
 
-  const getCountryByvalue = (value: string) => {
+  const getCountryByValue = (value: string) => {
     return allCountries?.filter((item) => {
       return item?.value === value;
     });
@@ -21,7 +21,7 @@ const useCountryInfo = () => {
 
   return {
     getAll,
-    getCountryByvalue,
+    getCountryByValue,
   };
 };
 

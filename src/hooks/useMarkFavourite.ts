@@ -1,21 +1,22 @@
-import { getCurrentUser } from "@/actions/getCurrentUser";
-import { API, FAVOURITE } from "@/constants/apiEndpoints";
-import { User } from "@prisma/client";
-import axios from "axios";
-import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
+import axios from "axios";
+
 import useLoginModal from "./useLoginModal";
+import { SafeUser } from "@/types/DataBaseModes/DataBaseModes";
+import { API, FAVOURITE } from "@/constants/apiEndpoints";
+import toast from "react-hot-toast";
 
 type MarkFavoriteTypes = {
-  listingId: number;
-  currentUser: User | null;
+  listingId: string;
+  currentUser: SafeUser | null;
 };
 
 const useMarkFavourite = ({ listingId, currentUser }: MarkFavoriteTypes) => {
   const router = useRouter();
   const loginModal = useLoginModal();
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState("");
+  // const [error, setError] = useState("");
 
   const hasFavourite = useMemo(() => {
     const favoriteList = currentUser?.favoritesIds;
@@ -31,10 +32,9 @@ const useMarkFavourite = ({ listingId, currentUser }: MarkFavoriteTypes) => {
     }
 
     setIsLoading(true);
-    setError("");
     try {
-      let user;
-      let url = `${API}${FAVOURITE}/${listingId}`;
+      let user: { data: any };
+      let url = `/${API}${FAVOURITE}/${listingId}`;
       if (!hasFavourite) {
         user = await axios.put(url);
       } else {
@@ -42,19 +42,19 @@ const useMarkFavourite = ({ listingId, currentUser }: MarkFavoriteTypes) => {
       }
       setIsLoading(false);
 
-      if (user?.ok) {
+      if (user?.data?.ok) {
         router?.refresh();
         return;
       }
-      setError(user?.message);
-    } catch (err) {
+      toast?.error("Something went wrong!");
+    } catch (err: any) {
       setIsLoading(false);
-      setError(err?.message || err);
+      toast?.error(err?.message || err);
       console.log(err);
     }
   };
 
-  return { hasFavourite, markFavorite, isLoading, error };
+  return { hasFavourite, markFavorite, isLoading };
 };
 
 export default useMarkFavourite;

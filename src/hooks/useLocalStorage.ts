@@ -15,7 +15,7 @@ const useLocalStoarge = () => {
     try {
       let data = window.localStorage.getItem(key) as string;
       data = decryptData(data) as string;
-      return data;
+      return JSON.parse(data);
     } catch (err) {
       console.log("Error while retieving data from local storage: " + err);
     }

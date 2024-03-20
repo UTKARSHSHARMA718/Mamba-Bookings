@@ -19,7 +19,8 @@ export const authOptions: AuthOptions = {
       clientSecret: process.env.GOOGLE_SECRET as string,
     }),
     CredentialsProvider({
-      name: CREDENTIALS,
+      // name: CREDENTIALS,
+      name: "credentials",
       credentials: {
         email: {
           label: "email",
@@ -31,39 +32,37 @@ export const authOptions: AuthOptions = {
         },
       },
       async authorize(credentials) {
-        console.log({credentials})
-        // if (!credentials || !credentials.email || !credentials.password) {
-        //   throw new Error("No credentials Provided!");
-        // }
+        if (!credentials?.email || !credentials?.password) {
+          throw new Error("No credentials Provided!");
+        }
 
-        // //NOTE: try finding user in our database
-        // const user = await prisma.user.findUnique({
-        //   where: {
-        //     email: credentials.email,
-        //   },
-        // });
+        //NOTE: try finding user in our database
+        const user = await prisma.user.findUnique({
+          where: {
+            email: credentials.email,
+          },
+        });
 
-        // if (!user || !user?.hashsedPassword) {
-        //   throw new Error("User not found!");
-        // }
+        if (!user || !user?.hashsedPassword) {
+          throw new Error("User not found!");
+        }
 
-        // // NOTE: checking password
-        // const isPasswordSame = await bcrypt.compare(
-        //   credentials.password,
-        //   String(user?.hashsedPassword)
-        // );
+        // NOTE: checking password
+        const isPasswordSame = await bcrypt.compare(
+          credentials.password,
+          user?.hashsedPassword
+        );
 
-        // if (!isPasswordSame) {
-        //   throw new Error("Invalid credentials!");
-        // }
+        if (!isPasswordSame) {
+          throw new Error("Invalid credentials!");
+        }
 
-        // return user;
-        return null;
+        return user;
       },
     }),
   ],
   pages: {
-    signIn: "http://localhost:3000/",
+    signIn: "/",
     error: "http://localhost:3000/hello",
   },
   debug: process.env.NODE_ENV === "development",

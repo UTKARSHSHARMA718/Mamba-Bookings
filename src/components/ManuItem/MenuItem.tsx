@@ -2,18 +2,20 @@ import React from 'react'
 type MenuProps = {
     label: string;
     onClick: () => void;
+    customStyles?: string;
 }
 
 const MenuItem: React.FC<MenuProps> = ({
     label,
     onClick,
+    customStyles,
 }) => {
 
     return (
-        <div className="p-2 cursor-pointer flex justify-center items-center hover:bg-slate-100/70 transition"
+        <div className={`p-2 cursor-pointer flex justify-center rounded-xl items-center hover:bg-slate-100 transition ${customStyles}`}
             {...{ onClick }}
         >
-            <p>{label}</p>
+            <p className='font-medium text-sm'>{label}</p>
         </div>
     )
 }

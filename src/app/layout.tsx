@@ -7,6 +7,7 @@ import ToastProvider from "@/providers/ToastProvider";
 import { getCurrentUser } from "@/actions/getCurrentUser";
 import "./globals.css";
 import { COMPANY_NAME } from "@/constants/const";
+import RemoveFilter from "@/components/RemoveFilter/RemoveFilter";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -22,13 +23,13 @@ export default async function RootLayout({
 }>) {
 
   const currentUser = await getCurrentUser();
-  console.log({currentUser})
 
   return (
     <html lang="en">
       <body className={inter.className}>
         <ModalsProvider />
         <ToastProvider />
+        <RemoveFilter />
         <Navbar {...{ currentUser }} />
         {children}
       </body>

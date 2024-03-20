@@ -1,55 +1,52 @@
-import qs from "query-string";
+import { useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { useSearchParams } from "next/navigation";
-import { useCallback } from "react";
+import qs from "query-string";
 
-type QueryParamsTypes = {
-  isMultiSelect?: boolean;
-};
-
-const useQueryParams = (props: QueryParamsTypes) => {
-  const { isMultiSelect = true } = props;
+const useQueryParams = () => {
   const router = useRouter();
   const params = useSearchParams();
 
-  const handleClick = useCallback(
-    (queryName: string, optionName: string) => {
-      const paramsString = params.toString();
-      let value = qs.parse(paramsString); // value is in form of object
-      let selectedValueArray: Array<string> = [];
+  const setQueryParams = useCallback(
+    ({ queryName, value }: { queryName: string; value: string }) => {
+      const paramsString = params?.toString() || "";
+      let queryParamsValue = qs.parse(paramsString); // value is in form of object
 
-      if (value?.[optionName]) {
-        const queryString = value?.[optionName] as string;
-        selectedValueArray = queryString?.split(",");
-      }
+      queryParamsValue = {
+        ...queryParamsValue,
+        [queryName]: value,
+      };
 
-      if (selectedValueArray.includes(queryName)) {
-        selectedValueArray = selectedValueArray?.filter((v) => v !== queryName);
-      } else {
-        if (isMultiSelect) {
-          selectedValueArray?.push(queryName);
-        } else {
-          selectedValueArray = [queryName];
-        }
-      }
-
-      if (selectedValueArray?.length === 0) {
-        delete value?.[optionName];
-      } else {
-        value = {
-          ...value,
-          [optionName]: selectedValueArray?.join(","),
-        };
-      }
-
-      const updatedQuery = qs.stringify(value);
+      const updatedQuery = qs.stringify(queryParamsValue);
 
       router.push(`/?${updatedQuery}`);
     },
     [router, params]
   );
 
-  return { handleClick };
+  const removeQuery = ({ key }: { key: string | string[] }) => {
+    const paramsString = params?.toString() || "";
+    let value = qs.parse(paramsString);
+    if (Array.isArray(key)) {
+      key?.forEach((v) => {
+        delete value?.[v];
+      });
+    } else {
+      delete value?.[key];
+    }
+    const updatedQuery = qs.stringify(value);
+    router.push(`/?${updatedQuery}`);
+  };
+
+  const getQueryParams = () => {
+    let queryParams = {};
+    if (params?.toString()) {
+      queryParams = qs.parse(params?.toString());
+    }
+    return queryParams;
+  };
+
+  return { setQueryParams, removeQuery, getQueryParams };
 };
 
 export default useQueryParams;

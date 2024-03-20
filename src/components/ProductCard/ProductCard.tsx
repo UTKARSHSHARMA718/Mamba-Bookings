@@ -1,44 +1,89 @@
+'use client'
+
+import React, { useCallback } from 'react'
 import Image from 'next/image';
-import React from 'react'
+import { useRouter } from 'next/navigation';
+import { format } from 'date-fns';
+
+import Button from '../Button/Button';
 import HeartButton from '../HeartButton/HeartButton';
+import useCountryInfo from '@/hooks/useCountryInfo';
+import { LISTING } from '@/constants/routeNames';
+import { Reservation } from '@prisma/client';
+import { SafeUser } from '@/types/DataBaseModes/DataBaseModes';
 
 type ProductCardType = {
-    title: string;
-    subTitle: string;
     price: number;
     imgSrc: string;
+    listingId: string;
+    onAction?: (value: string) => void;
+    actionLabel?: string;
+    reservation?: Reservation | null;
+    disabled?: boolean;
+    currentUser: SafeUser | null;
+    locationValue: string;
+    category: string;
 }
 
 const ProductCard: React.FC<ProductCardType> = ({
-    title,
-    subTitle,
     price,
     imgSrc,
+    listingId,
+    onAction,
+    actionLabel,
+    reservation,
+    disabled,
+    currentUser,
+    locationValue,
+    category,
 }) => {
-    const dummyImageUrl = '';
+    const dummyImageUrl = '/images/fallback image.jpg'; // TODO: provide dummy URL
+    const router = useRouter();
+
+    const { getCountryByValue } = useCountryInfo();
+    const location = getCountryByValue(locationValue);
+
+    const getReservationDates = useCallback(() => {
+        if (!reservation) {
+            return;
+        }
+
+        const start = new Date(reservation.startDate);
+        const end = new Date(reservation.endDate);
+
+        return `${format(start, 'PP')} - ${format(end, 'PP')}`;
+    }, [reservation?.startDate, reservation?.endDate]);
+
+    const handleOnClick = useCallback((e: React.MouseEvent<HTMLButtonElement>) => {
+        e?.stopPropagation();
+        if (disabled || !listingId) {
+            return;
+        }
+
+        onAction?.(listingId);
+    }, [onAction, disabled, listingId]);
 
     return (
         <div
-            // style={{maxWidth:"25%"}} 
+            onClick={() => router.push(`${LISTING}/${listingId}`)}
             className={`
-        p-6
-        rounded-xl 
-        flex-col
-        gap-2;
-        max-h-[350px]
-        flex
-        justify-center
-        items-center
-        overflow-hidden
-        relative
-        `}>
-            <div className={`
+            p-6
+            rounded-xl 
+            flex-col
+            gap-2;
+            max-h-[40vh]
+            cursor-pointer
+            flex
+            justify-center
+            items-center
+            relative
+            `}>
+            <div style={{ zIndex: "9" }} className={`
                 absolute
                 top-7
                 right-8
-                z-50
             `}>
-                <HeartButton listingId={1} currentUser={null} />
+                <HeartButton listingId={listingId} {...{ currentUser }} />
             </div>
             <div className={`
                 w-full
@@ -47,22 +92,36 @@ const ProductCard: React.FC<ProductCardType> = ({
                 rounded-xl
                 cursor-pointer
             `}>
-                <Image src={imgSrc || dummyImageUrl} width={100} height={100} alt={`${title}-image`}
+                <Image src={imgSrc || dummyImageUrl} width={100} height={100} alt={`${location?.[0]?.label}-image`}
                     className='transition duration-100 rounded-xl max-h-full h-full w-full hover:scale-125' />
             </div>
             <div className='flex flex-col gap-1  w-full items-start p-4 px-0 h-1/4'>
                 <div className='flex flex-col gap-2 justify-start items-start'>
-                    <div>
-                        <p className='text-sm text-black font-bold'>{title}</p>
-                    </div>
-                    <div>
-                        <p className='text-xs text-slate-400 font-medium'>{subTitle}</p>
-                    </div>
+                    <p className='text-slate-700 text-sm font-semibold'>
+                        {location[0]?.label}, {location[0]?.region}
+                    </p>
+                   <p className='text-slate-700 text-sm font-semibold'>
+                        {category}
+                    </p>
                 </div>
                 <div className='flex gap-1 justify-center items-start'>
                     <p className='text-black font-bold text-xs'>$ {price} </p>
-                    <p className='text-xs'>nights</p>
+                    {!reservation && <p className='text-xs'>nights</p>}
                 </div>
+                {
+                    reservation &&
+                    <>
+                        <p className='text-slate-500 text-xs font-medium'>
+                            {getReservationDates()}
+                        </p>
+                        <Button
+                            label={actionLabel || ""}
+                            small
+                            onClick={handleOnClick}
+                            {...{ disabled }}
+                        />
+                    </>
+                }
             </div>
         </div>
     )

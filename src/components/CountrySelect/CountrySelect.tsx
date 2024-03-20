@@ -3,11 +3,8 @@ import Select from 'react-select'
 
 import useCountryInfo from '@/hooks/useCountryInfo';
 import { CountrySelectValue } from '@/types/CountrySelect/CountrySelectTypes';
+import { CountrySelectValueType } from '@/types/FilterScreens/FilterScreensTypes';
 
-type CountrySelectValueType = {
-    value?: CountrySelectValue;
-    onChange: (value: CountrySelectValue) => void;
-}
 
 const CountrySelect: React.FC<CountrySelectValueType> = ({
     value,
@@ -35,7 +32,7 @@ const CountrySelect: React.FC<CountrySelectValueType> = ({
                 isClearable
                 options={getAll() || []}
                 value={value}
-                onChange={(value) => onChange(value as CountrySelectValue)}
+                onChange={(value) => { onChange(value as CountrySelectValue) }}
                 formatOptionLabel={(countryValue) => getOptionBody(countryValue)}
                 className={{
                     input: () => 'text-lg',
@@ -46,7 +43,7 @@ const CountrySelect: React.FC<CountrySelectValueType> = ({
                     return {
                         ...theme,
                         primary: 'black',
-                        primary25: 'text-primary-red',
+                        primary25: 'text-primary-green-1',
                     }
                 }}
             />
