@@ -11,7 +11,7 @@ const Logo = () => {
 
   return (
     <div onClick={()=>router.push(HOME)} className='p-1 cursor-pointer hidden md:block'>
-           <Image src={Logo} width={100} height={200} alt='Company Logo' />
+           <Image src={Logo} width={100} height={200} alt='Company Logo' className='dark:brightness-[200%] dark:saturate-[2300%]' />
     </div>
   )
 }

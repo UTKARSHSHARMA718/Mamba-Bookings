@@ -10,9 +10,10 @@ import useUserDropdown from '@/hooks/useUserDropdown';
 
 type ProfileTypes = {
   isUserLoggedIn: boolean;
+  openRentModalHandler: () => void;
 }
 
-const Profile: React.FC<ProfileTypes> = ({ isUserLoggedIn }) => {
+const Profile: React.FC<ProfileTypes> = ({ isUserLoggedIn, openRentModalHandler }) => {
   // TODO: I think we should remove this
   const { isOpen, onOpen, onClose } = useUserDropdown();
   const { ref, shouldNotConsiderRef } = useOutsideClick({
@@ -29,6 +30,7 @@ const Profile: React.FC<ProfileTypes> = ({ isUserLoggedIn }) => {
   };
 
   return (
+    // @ts-ignore
     <div ref={shouldNotConsiderRef} className='p-2 relative cursor-pointer border rounded-3xl flex gap-3 justify-center items-center hover:shadow-md' onClick={toggleMenu}
     >
       <AiOutlineMenu />
@@ -37,7 +39,7 @@ const Profile: React.FC<ProfileTypes> = ({ isUserLoggedIn }) => {
       </div>
       {
         isOpen &&
-        <UserMenuDropDown {... { ref, isUserLoggedIn }} />
+        <UserMenuDropDown {... { ref, isUserLoggedIn, openRentModalHandler }} />
       }
     </div>
   )

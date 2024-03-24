@@ -7,9 +7,10 @@ import { getCurrentUser } from '@/actions/getCurrentUser';
 
 const Properties = async () => {
     const user = await getCurrentUser();
-    const allListings = await getAllListing({
+    const listingRes = await getAllListing({
         userId: user?.id || "",
     });
+    const listings = listingRes?.data;
 
     if (!user) {
         return <EmptyPage
@@ -18,13 +19,20 @@ const Properties = async () => {
         />
     }
 
+    if (!listings || !listings?.length) {
+        return <EmptyPage
+            title='No listing to show!'
+            description='Please add some properties to see them here.'
+        />
+    }
+
     return (
-        <div>
-            <MainProductListing
-                {...{ user }}
-                allListings={allListings || []}
-            />
-        </div>
+        <MainProductListing
+            {...{ user }}
+            allListings={listings || []}
+            totalListings={listings.length}
+            isDeleteOptionAvailable
+        />
     )
 }
 

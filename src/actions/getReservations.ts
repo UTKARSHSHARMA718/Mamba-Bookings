@@ -1,4 +1,7 @@
+"use server";
+
 import prisma from "@/libs/prismaDB";
+import { redis } from "@/libs/redis/redis";
 
 interface IProps {
   userId?: string;
@@ -9,6 +12,7 @@ interface IProps {
 export const getReservations = async (props: IProps) => {
   try {
     const { userId, authorId, listingId } = props;
+
     const query: any = {};
 
     if (userId) {
@@ -21,6 +25,11 @@ export const getReservations = async (props: IProps) => {
 
     if (listingId) {
       query.listingId = listingId;
+    }
+    const cacheKey = JSON.stringify(props);
+    const cachedData: string = (await redis.get(cacheKey)) as string;
+    if (cachedData) {
+      return cachedData;
     }
 
     const reservations = await prisma?.reservation.findMany({
@@ -45,6 +54,10 @@ export const getReservations = async (props: IProps) => {
           createdAt: item?.listing?.createdAt?.toISOString(),
         },
       };
+    });
+
+    await redis.set(cacheKey, JSON.stringify(safeReservations), {
+      ex: 3600,// 1hr expiery time
     });
 
     return safeReservations;

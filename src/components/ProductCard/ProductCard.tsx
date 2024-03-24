@@ -1,13 +1,15 @@
 'use client'
 
-import React, { useCallback } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
+import { useTheme } from 'next-themes';
 import { format } from 'date-fns';
 
 import Button from '../Button/Button';
 import HeartButton from '../HeartButton/HeartButton';
 import useCountryInfo from '@/hooks/useCountryInfo';
+import { currencyNumberFormatter } from '@/libs/utils/util';
 import { LISTING } from '@/constants/routeNames';
 import { Reservation } from '@prisma/client';
 import { SafeUser } from '@/types/DataBaseModes/DataBaseModes';
@@ -40,6 +42,10 @@ const ProductCard: React.FC<ProductCardType> = ({
     const dummyImageUrl = '/images/fallback image.jpg'; // TODO: provide dummy URL
     const router = useRouter();
 
+    const [mounted, setMounted] = useState(false);
+
+
+
     const { getCountryByValue } = useCountryInfo();
     const location = getCountryByValue(locationValue);
 
@@ -62,6 +68,14 @@ const ProductCard: React.FC<ProductCardType> = ({
 
         onAction?.(listingId);
     }, [onAction, disabled, listingId]);
+
+    useEffect(() => {
+        setMounted(true);
+    }, [])
+
+    if (!mounted) {
+        return <></>;
+    }
 
     return (
         <div
@@ -97,30 +111,31 @@ const ProductCard: React.FC<ProductCardType> = ({
             </div>
             <div className='flex flex-col gap-1  w-full items-start p-4 px-0 h-1/4'>
                 <div className='flex flex-col gap-2 justify-start items-start'>
-                    <p className='text-slate-700 text-sm font-semibold'>
+                    <p className='text-slate-700 text-sm font-semibold dark:text-white'>
                         {location[0]?.label}, {location[0]?.region}
                     </p>
-                   <p className='text-slate-700 text-sm font-semibold'>
+                    <p className='text-slate-700 text-sm font-semibold dark:text-white'>
                         {category}
                     </p>
                 </div>
                 <div className='flex gap-1 justify-center items-start'>
-                    <p className='text-black font-bold text-xs'>$ {price} </p>
+                    <p className='text-black font-bold text-xs dark:text-white'>{currencyNumberFormatter(price)}</p>
                     {!reservation && <p className='text-xs'>nights</p>}
                 </div>
                 {
                     reservation &&
-                    <>
-                        <p className='text-slate-500 text-xs font-medium'>
-                            {getReservationDates()}
-                        </p>
-                        <Button
-                            label={actionLabel || ""}
-                            small
-                            onClick={handleOnClick}
-                            {...{ disabled }}
-                        />
-                    </>
+                    <p className='text-slate-500 text-xs font-medium'>
+                        {getReservationDates()}
+                    </p>
+                }
+                {
+                    actionLabel && onAction &&
+                    <Button
+                        label={actionLabel || ""}
+                        small
+                        onClick={handleOnClick}
+                        {...{ disabled }}
+                    />
                 }
             </div>
         </div>

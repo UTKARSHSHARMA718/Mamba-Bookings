@@ -1,7 +1,9 @@
-import Button from '@/components/Button/Button';
-import Calendar from '@/components/Calendar/Calendar';
 import React from 'react'
 import { Range } from 'react-date-range';
+
+import Button from '@/components/Button/Button';
+import Calendar from '@/components/Calendar/Calendar';
+import { currencyNumberFormatter } from '@/libs/utils/util';
 
 type ListingReservationsProps = {
     price: number;
@@ -26,6 +28,7 @@ const ListingReservations: React.FC<ListingReservationsProps> = ({
     return (
         <div className="
         bg-white
+        dark:bg-black
         rounded-xl
         border-[1px]
         border-neutral-200
@@ -46,7 +49,7 @@ const ListingReservations: React.FC<ListingReservationsProps> = ({
                 text-xl 
                 font-semibold
                 ">
-                    $ {price}
+                    {currencyNumberFormatter(price)}
                 </div>
                 <div className="
                 font-light
@@ -69,7 +72,7 @@ const ListingReservations: React.FC<ListingReservationsProps> = ({
             />
             <div className='flex justify-between items-center gap-4 w-full'>
                 <p className='text-sm font-bold'>Total:</p>
-                <p className='text-sm font-bold'>$ {totalPrice}</p>
+                <p className='text-sm font-bold'>{currencyNumberFormatter(totalPrice)}</p>
             </div>
         </div>
     )

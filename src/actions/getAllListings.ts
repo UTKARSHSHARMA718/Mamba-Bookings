@@ -1,14 +1,18 @@
+"use server";
+
 import prisma from "@/libs/prismaDB";
 
 interface GetAllListingProps {
-  userId?: string | null;
-  guestCount?: number | null;
-  roomCount?: number | null;
-  bathroomCount?: number | null;
-  locationValue?: string | null;
-  startDate?: string | null;
-  endDate?: string | null;
-  category?: string[] | null;
+  userId?: string;
+  guestCount?: number;
+  roomCount?: number;
+  bathroomCount?: number;
+  locationValue?: string;
+  startDate?: string;
+  endDate?: string;
+  category?: string[];
+  pageNumber?: number;
+  pageSize?: number;
 }
 
 export const getAllListing = async (props: GetAllListingProps) => {
@@ -21,6 +25,8 @@ export const getAllListing = async (props: GetAllListingProps) => {
     locationValue,
     startDate,
     endDate,
+    pageNumber,
+    pageSize,
   } = props;
 
   try {
@@ -31,7 +37,7 @@ export const getAllListing = async (props: GetAllListingProps) => {
     if (locationValue) {
       query.locationValue = locationValue;
     }
-    if (category) {
+    if (category && category?.length > 0) {
       query.category = {
         in: category,
       };
@@ -79,7 +85,17 @@ export const getAllListing = async (props: GetAllListingProps) => {
         createdAt: "desc",
       },
     });
-    return allListings;
+
+    if (pageNumber && pageSize) {
+      const start = (pageNumber - 1) * pageSize;
+      const end = pageNumber * pageSize;
+      return {
+        data: allListings?.slice(start, end),
+        total: allListings?.length,
+      };
+    }
+
+    return { data: allListings, total: allListings?.length };
   } catch (err) {
     console.log("Error while getting all the listings: " + err);
   }

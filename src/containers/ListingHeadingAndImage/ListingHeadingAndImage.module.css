@@ -1,5 +1,9 @@
-.heartBtnContainer{
-    position: absolute;
-    top: 16px;
-    right: 12px;
+.heartBtnContainer {
+  position: absolute;
+  top: 16px;
+  right: 12px;
+}
+
+.button {
+  max-width: 120px;
 }

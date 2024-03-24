@@ -1,21 +1,25 @@
 'use client'
 
 import React, { useState } from 'react'
-import { FieldValues, SubmitHandler, useForm } from 'react-hook-form'
 import { AiFillGithub } from 'react-icons/ai'
 import { FcGoogle } from 'react-icons/fc'
-import axios from 'axios'
-import useRegisterModal from '@/hooks/useRegisterModal'
-import { API, SIGNUP } from '@/constants/apiEndpoints'
-import Modal from '@/components/Modal/Modal'
+import { FieldValues, SubmitHandler, useForm } from 'react-hook-form'
+import { signIn } from "next-auth/react";
+import axios from 'axios';
+
+import Button from '@/components/Button/Button'
 import Heading from '@/components/Headers/Heading'
 import Input from '@/components/Input/Input'
-import Button from '@/components/Button/Button'
+import Modal from '@/components/Modal/Modal'
+import useLoginModal from '@/hooks/useLoginModal'
+import useRegisterModal from '@/hooks/useRegisterModal'
+import { API, SIGNUP } from '@/constants/apiEndpoints'
 import { COMPANY_NAME } from '@/constants/const'
 
 const RegisterModal = () => {
 
     const registerModal = useRegisterModal();
+    const loginModal = useLoginModal();
     const [isLoading, setIsLoading] = useState(false);
 
     const { register, handleSubmit, formState: {
@@ -31,11 +35,9 @@ const RegisterModal = () => {
     const onSubmit: SubmitHandler<FieldValues> = async (payload) => {
         setIsLoading(true);
         try {
-            const url = API + SIGNUP;
+            const url = "/" + API + SIGNUP;
             let res = await axios.post(url, payload);
-            // also check for the isOk or status code of the response
-            //@ts-ignore
-            if (res?.ok) {
+            if (res?.data?.ok) {
                 registerModal?.onClose(); // coming from zustan library
             }
         } catch (err) {
@@ -75,13 +77,18 @@ const RegisterModal = () => {
         </div>
     )
 
+    const switchSignupToLoginModal = () => {
+        registerModal?.onClose();
+        loginModal?.onOpen();
+    }
+
     const footerContent = (
-        <div className='flex flex-col gap-2'>
+        <div className='flex flex-col gap-2 justify-center items-center'>
             <Button
                 label='Google'
                 outline
                 icon={FcGoogle}
-                onClick={() => { }}
+                onClick={() => signIn('google')}
                 disabled={isLoading}
             />
             <Button
@@ -89,8 +96,10 @@ const RegisterModal = () => {
                 label='Github'
                 outline
                 icon={AiFillGithub}
-                onClick={() => { }}
+                onClick={() => signIn('github')}
             />
+            <hr />
+            <p className='text-xs font-medium'>Are you already a user? <span className='text-xs font-bold cursor-pointer' onClick={switchSignupToLoginModal}>login</span> </p>
         </div>
     )
 

@@ -1,6 +1,13 @@
+import { NextRequest, NextResponse } from "next/server";
+
 import prisma from "@/libs/prismaDB";
 import { getCurrentUser } from "@/actions/getCurrentUser";
-import { NextRequest, NextResponse } from "next/server";
+import { currencyNumberFormatter } from "../../../libs/utils/util";
+import { humanReadableDateFormate } from "@/libs/utils/util";
+import {
+  sendMail,
+  sendMailForSuccessfulReservation,
+} from "@/libs/mail/sendMail";
 
 export async function POST(req: NextRequest) {
   try {
@@ -31,6 +38,9 @@ export async function POST(req: NextRequest) {
       where: {
         id: body?.listingId,
       },
+      include: {
+        user: true,
+      },
       data: {
         reservations: {
           create: {
@@ -41,6 +51,39 @@ export async function POST(req: NextRequest) {
           },
         },
       },
+    });
+
+    //trigger an email to customer and one to owner for notifying them about the new reservation.
+    const htmlTemplateForCustomer = sendMailForSuccessfulReservation(
+      {
+        propertyName: res?.title,
+        startDate: humanReadableDateFormate(`${body?.startDate}`),
+        endDate: humanReadableDateFormate(`${body?.endDate}`),
+        totalPrice: currencyNumberFormatter(body?.totalPrice),
+      },
+      "customer"
+    );
+    await sendMail({
+      to: user?.email || "No email available",
+      name: user?.name || "No name available",
+      subject: "Reservation Confirmed",
+      body: htmlTemplateForCustomer,
+    });
+
+    const htmlTemplateForOwner = sendMailForSuccessfulReservation(
+      {
+        propertyName: res?.title,
+        startDate: humanReadableDateFormate(`${body?.startDate}`),
+        endDate: humanReadableDateFormate(`${body?.endDate}`),
+        totalPrice: currencyNumberFormatter(body?.totalPrice),
+      },
+      "owner"
+    );
+    await sendMail({
+      to: res?.user?.email || "No email available",
+      name: res?.user?.name || "No name available",
+      subject: "New Reservation",
+      body: htmlTemplateForOwner,
     });
 
     return NextResponse.json(

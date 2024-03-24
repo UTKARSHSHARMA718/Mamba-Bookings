@@ -2,16 +2,20 @@ import React from 'react'
 
 import EmptyPage from '@/components/EmptyPage/EmptyPage'
 import Heading from '@/components/Headers/Heading';
-import { getFavouriteListing } from '@/actions/getFavouriteListings'
-import { getCurrentUser } from '@/actions/getCurrentUser';
 import MainProductListing from '@/containers/MainProductListing/MainProductListing';
+import { getCurrentUser } from '@/actions/getCurrentUser';
+import { getFavouriteListing } from '@/actions/getFavouriteListings'
+import { PAGE_SIZE } from '@/constants/const';
 
 const Favoutrite = async () => {
 
-    const allfavoriteListings = await getFavouriteListing();
+    const allfavoriteListings = await getFavouriteListing({
+        pageSize: PAGE_SIZE,
+        pageNumber: 1,
+    });
     const user = await getCurrentUser();
 
-    if(!user){
+    if (!user) {
         return <EmptyPage
             title='Not Authorized!'
             description='Please login to see your favourite marked items.'
@@ -36,7 +40,8 @@ const Favoutrite = async () => {
             />
             <MainProductListing
                 allListings={allfavoriteListings}
-                {...{user}}
+                totalListings={allfavoriteListings?.length}
+                {...{ user }}
             />
         </div>
     )

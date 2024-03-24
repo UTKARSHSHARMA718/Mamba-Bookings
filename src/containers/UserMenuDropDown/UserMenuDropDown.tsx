@@ -3,24 +3,26 @@
 import React from 'react';
 import { signOut } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
+import { useTheme } from 'next-themes';
 
 import MenuItem from '@/components/ManuItem/MenuItem';
 import useLoginModal from '@/hooks/useLoginModal';
 import useRegisterModal from '@/hooks/useRegisterModal';
-import useRentModal from '@/hooks/useRentModal';
 import useUserDropdown from '@/hooks/useUserDropdown';
-import { COMPANY_NAME } from '@/constants/const';
+import { COMPANY_NAME, DARK } from '@/constants/const';
 import { FAVORITES, PROPERTIES, RESERVATIONS, TRIPS } from '@/constants/routeNames';
 
 type UserMenuDropDownTypes = {
     isUserLoggedIn: boolean;
+    openRentModalHandler: () => void;
 }
 
-const UserMenuDropDown: React.FC<UserMenuDropDownTypes> = React.forwardRef(({ isUserLoggedIn }, ref: React.ForwardedRef<unknown>) => {
+const UserMenuDropDown: React.FC<UserMenuDropDownTypes> = React.forwardRef(({ isUserLoggedIn, openRentModalHandler }, ref: React.ForwardedRef<unknown>) => {
     const router = useRouter();
+    const { theme } = useTheme();
+    const isDarkTheme = theme === DARK;
 
     const registerModalProperties = useRegisterModal();
-    const rentModal = useRentModal();
     const loginModalProperties = useLoginModal();
     const userUserMenuDropDown = useUserDropdown();
 
@@ -54,7 +56,7 @@ const UserMenuDropDown: React.FC<UserMenuDropDownTypes> = React.forwardRef(({ is
             },
             {
                 text: `Add my home to ${COMPANY_NAME}`,
-                onClick: rentModal?.onOpen,
+                onClick: openRentModalHandler,
             },
             {
                 text: 'Logout',
@@ -72,6 +74,7 @@ const UserMenuDropDown: React.FC<UserMenuDropDownTypes> = React.forwardRef(({ is
             top-4 
             right-0 
             bg-black
+            dark:bg-white
             rounded-xl 
             flex 
             flex-col 
@@ -87,7 +90,7 @@ const UserMenuDropDown: React.FC<UserMenuDropDownTypes> = React.forwardRef(({ is
             // TODO: remove it later after fixing the styles issue in tailwind
             style={{
                 position: 'absolute', top: "40px", right: "0px", flexDirection: "column",
-                backgroundColor: "#E5E5E5", borderRadius: '12px',
+                backgroundColor: (isDarkTheme ? "black" : "#E5E5E5"), borderRadius: '12px',
                 padding: "8px 0xp",
                 overflow: "hidden",
                 width: "25vw",

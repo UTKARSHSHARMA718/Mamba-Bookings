@@ -5,35 +5,64 @@ import prisma from "@/libs/prismaDB";
 import { ROUNDES_FOR_HASHING_PASSWORD } from "@/constants/const";
 
 export async function POST(req: NextRequest) {
-  const body = await req.json();
+  try {
+    const body = await req.json();
 
-  // NOTE: generating hashed password
+    if (!body?.name || !body?.password) {
+      return NextResponse?.json(
+        {
+          ok: false,
+          message: "Invalid request!",
+          data: null,
+        },
+        { status: 400 }
+      );
+    }
 
-  const hashedPasswordFromBrcypt = await bcrypt?.hash(
-    body.password,
-    ROUNDES_FOR_HASHING_PASSWORD
-  );
+    // NOTE: generating hashed password
 
-  //NOTE: creating user into our database
-  const user = await prisma.user.create({
-    data: {
-      name: body.name,
-      email: body.email,
-      hashsedPassword: hashedPasswordFromBrcypt,
-    },
-  });
+    const hashedPasswordFromBrcypt = await bcrypt?.hash(
+      body.password,
+      ROUNDES_FOR_HASHING_PASSWORD
+    );
 
-  if (!user) {
-   return NextResponse?.json({
-      ok: false,
-      message: "Unable to create user!",
-      data: null,
+    //NOTE: creating user into our database
+    const user = await prisma.user.create({
+      data: {
+        name: body.name,
+        email: body.email,
+        hashsedPassword: hashedPasswordFromBrcypt,
+      },
     });
-  }
 
-  return NextResponse?.json({
-    ok: true,
-    message: "user has been created!",
-    data: user,
-  });
+    if (!user) {
+      return NextResponse?.json(
+        {
+          ok: false,
+          message: "Unable to create user!",
+          data: null,
+        },
+        { status: 500 }
+      );
+    }
+
+    return NextResponse?.json(
+      {
+        ok: true,
+        message: "User has been created!",
+        data: user,
+      },
+      { status: 201 }
+    );
+  } catch (err: any) {
+    console.log("Error while creating new user: " + err);
+    return NextResponse?.json(
+      {
+        ok: false,
+        message: "Something went wrong!",
+        data: null,
+      },
+      { status: 500 }
+    );
+  }
 }

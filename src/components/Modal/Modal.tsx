@@ -24,16 +24,13 @@ const Modal: React.FC<ModalProps> = ({
         if (disabled) {
             return;
         }
-
         const timer = setTimeout(() => {
             onSubmit();
         }, 300)
 
-
         return () => {
             clearTimeout(timer);
         }
-
     }, [disabled, onSubmit]);
 
     const handleOnClose = useCallback(() => {
@@ -58,7 +55,7 @@ const Modal: React.FC<ModalProps> = ({
 
     return (
         <>
-            {showModal &&
+            {isOpen ?
                 <div className='
                     z-50
                     overflow-x-hidden
@@ -72,26 +69,45 @@ const Modal: React.FC<ModalProps> = ({
                     justify-center
                     items-center
                 '>
-                    {/* Container */}
-                    <div
-                        style={{ zIndex: "9999999" }}
-                        className="
-                        flex
-                        flex-col
-                        justify-between
-                        items-center
-                        gap-2
-                        bg-white
-                        rounded-lg
-                        p-2
-                        w-1/2
-                        max-h-[800px]
-                        max-w-[500px]
-                        min-w-[250px]
+                    <div className="
+                    relative
+                    flex
+                    justify-center
+                    items-center 
+                    w-full
+                    md:w-4/6
+                    lg:w-3/6
+                    xl:w-2/5
+                    my-6
+                    mx-auto 
+                    h-full 
+                    lg:h-auto
+                    md:h-auto
                     ">
+                        {/* Container */}
+                        <div
+                            style={{ zIndex: "9999999" }}
+                            className={`
+                            flex
+                            flex-col
+                            justify-between
+                            items-center
+                            gap-2
+                            bg-white
+                            dark:bg-slate-900
+                            rounded-lg
+                            p-2
+                            max-h-[800px]
+                            max-w-[500px]
+                            min-w-[250px]
+                            transition
+                            duration-300
+                            ${showModal ? "translate-y-0" : "translate-y-full"}
+                            ${showModal ? "opacity-100" : "opacity-0"}
+                        `}>
 
-                        {/* Header */}
-                        <div className="
+                            {/* Header */}
+                            <div className="
                             w-full
                             border-b-[1px]
                             min-h-[32px]
@@ -101,43 +117,46 @@ const Modal: React.FC<ModalProps> = ({
                             justify-between
                             items-center
                         ">
-                            <button className="
+                                <button className="
                                 flex
                                 justify-between
                                 items-center
                                 p-2
                                 rounded-md
                                 bg-white
+                                dark:bg-slate-900
                                 relative
                             ">
-                                <IoMdClose onClick={handleOnClose} size={18} className='
+                                    <IoMdClose onClick={handleOnClose} size={18} className='
                                     transition
                                     duration-200
                                     text-black
                                     hover:text-gray-700
                                     cursor-pointer
+                                    dark:bg-slate-900
+                                    dark:text-white
                                     '/>
 
-                            </button>
+                                </button>
 
-                            {/* Title */}
-                            <div className='
+                                {/* Title */}
+                                <div className='
                             text-md
                             text-center
                             font-semibold
                             w-full
                             '>
-                                {title}
+                                    {title}
+                                </div>
                             </div>
-                        </div>
 
-                        {/* Body */}
-                        <div className="relative p-6 flex-auto w-full">
-                            {body}
-                        </div>
+                            {/* Body */}
+                            <div className="relative p-6 flex-auto w-full">
+                                {body}
+                            </div>
 
-                        {/* Footer */}
-                        <div className="
+                            {/* Footer */}
+                            <div className="
                             flex 
                             flex-col
                             gap-2
@@ -145,25 +164,28 @@ const Modal: React.FC<ModalProps> = ({
                             w-full
                             border-t-[1px]
                          ">
-                            <div className="flex gap-2">
-                                {secondaryActionLabel && secondaryAction &&
-                                    <Button
-                                        outline
-                                        label={secondaryActionLabel}
-                                        onClick={handleSecoundaryAction}
-                                        {...{ disabled }}
-                                    />}
-                                {!!actionLabel && handleOnSubmit &&
-                                    <Button
-                                        label={actionLabel}
-                                        onClick={handleOnSubmit}
-                                        {...{ disabled }}
-                                    />}
+                                <div className="flex gap-2">
+                                    {secondaryActionLabel && secondaryAction &&
+                                        <Button
+                                            outline
+                                            label={secondaryActionLabel}
+                                            onClick={handleSecoundaryAction}
+                                            {...{ disabled }}
+                                        />}
+                                    {!!actionLabel && handleOnSubmit &&
+                                        <Button
+                                            label={actionLabel}
+                                            onClick={handleOnSubmit}
+                                            {...{ disabled }}
+                                        />}
+                                </div>
+                                {footer}
                             </div>
-                            {footer}
                         </div>
                     </div>
-                </div>}
+                </div> :
+                null
+            }
         </>
     )
 }

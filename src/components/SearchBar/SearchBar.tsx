@@ -43,6 +43,8 @@ const SearchBar: React.FC<SearchProps> = ({
       gap-2  
       max-w-[400px]
       hover:shadow-md
+      dark:bg-slate-900
+      dark:hover:shadow-slate-200
       `}>
       {
         options.map((option, index, array) => {
@@ -58,6 +60,7 @@ const SearchBar: React.FC<SearchProps> = ({
             cursor-pointer
             text-gray-400 
             hover:text-black
+            dark:hover:text-white
             `}>
               {option?.text}
             </p>

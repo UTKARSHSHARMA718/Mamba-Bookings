@@ -1,40 +1,25 @@
 import Categories from "@/containers/Categories/Categories";
+import EmptyPage from "@/components/EmptyPage/EmptyPage";
 import MainProductListing from "@/containers/MainProductListing/MainProductListing";
 import { getAllListing } from "@/actions/getAllListings";
 import { getCurrentUser } from "@/actions/getCurrentUser";
+import { PAGE_SIZE } from "@/constants/const";
 
-type HomeProps = {
-  searchParams: {
-    categories: string;
-    bathrooms: string;
-    guest: string;
-    location: string;
-    rooms: string;
-    startDate: string,
-    endDate: string,
-  }
-}
-
-const Home: React.FC<HomeProps> = async ({ searchParams }) => {
-  const { 
-    categories,
-    bathrooms: bathroomCount, 
-    guest: guestCount, 
-    location: locationValue, 
-    rooms: roomCount,
-    startDate,
-    endDate, 
-  } = searchParams;
+const Home: React.FC = async () => {
   const user = await getCurrentUser();
-  const listings = await getAllListing({ 
-    category: categories?.split(","), 
-    bathroomCount: +bathroomCount, 
-    guestCount: +guestCount, 
-    roomCount: +roomCount,
-    locationValue,
-    startDate,
-    endDate, 
+  const listingRes = await getAllListing({
+    pageNumber: 1,
+    pageSize: PAGE_SIZE,
   });
+
+  const listings = listingRes?.data;
+
+  if (!listings || !listings?.length) {
+    return <EmptyPage
+      title='No products for listing!'
+      description='Please add some products to show them here.'
+    />
+  }
 
   return (
     <div>
@@ -42,6 +27,7 @@ const Home: React.FC<HomeProps> = async ({ searchParams }) => {
       <div>
         <MainProductListing
           allListings={listings || []}
+          totalListings={listingRes?.total}
           {...{ user }}
         />
       </div>

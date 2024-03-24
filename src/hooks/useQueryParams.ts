@@ -8,7 +8,15 @@ const useQueryParams = () => {
   const params = useSearchParams();
 
   const setQueryParams = useCallback(
-    ({ queryName, value }: { queryName: string; value: string }) => {
+    ({
+      queryName,
+      value,
+      currentUrl,
+    }: {
+      queryName: string;
+      value: string;
+      currentUrl?: string;
+    }) => {
       const paramsString = params?.toString() || "";
       let queryParamsValue = qs.parse(paramsString); // value is in form of object
 
@@ -18,13 +26,19 @@ const useQueryParams = () => {
       };
 
       const updatedQuery = qs.stringify(queryParamsValue);
-
-      router.push(`/?${updatedQuery}`);
+      const url = (currentUrl ? currentUrl : "/") + "?" + updatedQuery;
+      router.push(url);
     },
     [router, params]
   );
 
-  const removeQuery = ({ key }: { key: string | string[] }) => {
+  const removeQuery = ({
+    key,
+    currentUrl,
+  }: {
+    key: string | string[];
+    currentUrl?: string;
+  }) => {
     const paramsString = params?.toString() || "";
     let value = qs.parse(paramsString);
     if (Array.isArray(key)) {
@@ -35,7 +49,8 @@ const useQueryParams = () => {
       delete value?.[key];
     }
     const updatedQuery = qs.stringify(value);
-    router.push(`/?${updatedQuery}`);
+    const url = (currentUrl ? currentUrl : "/") + "?" + updatedQuery;
+    router.push(url);
   };
 
   const getQueryParams = () => {

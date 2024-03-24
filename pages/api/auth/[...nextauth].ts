@@ -1,10 +1,11 @@
-import prisma from "@/libs/prismaDB";
-import GoogleProvider from "next-auth/providers/google";
-import GitHubProvider from "next-auth/providers/github";
-import CredentialsProvider from "next-auth/providers/credentials";
-import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import NextAuth, { AuthOptions } from "next-auth";
+import CredentialsProvider from "next-auth/providers/credentials";
+import GitHubProvider from "next-auth/providers/github";
+import GoogleProvider from "next-auth/providers/google";
+import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import bcrypt from "bcrypt";
+
+import prisma from "@/libs/prismaDB";
 import { CREDENTIALS } from "@/constants/const";
 
 export const authOptions: AuthOptions = {
@@ -19,8 +20,7 @@ export const authOptions: AuthOptions = {
       clientSecret: process.env.GOOGLE_SECRET as string,
     }),
     CredentialsProvider({
-      // name: CREDENTIALS,
-      name: "credentials",
+      name: CREDENTIALS,
       credentials: {
         email: {
           label: "email",
@@ -63,7 +63,6 @@ export const authOptions: AuthOptions = {
   ],
   pages: {
     signIn: "/",
-    error: "http://localhost:3000/hello",
   },
   debug: process.env.NODE_ENV === "development",
   session: {

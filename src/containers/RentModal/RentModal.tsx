@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
 import { FieldValues, SubmitHandler, useForm } from 'react-hook-form'
 import { useRouter, useSearchParams } from 'next/navigation'
+import { usePathname } from 'next/dist/client/components/navigation'
 import axios from 'axios'
 
 import CategoryInput from '@/components/CategoryInput/CategoryInput'
@@ -21,16 +22,17 @@ import { STEPS, STEP_TYPES } from '@/enums/RentModalEnum'
 import { getCountersInfo } from './RentModalConfig'
 import { CountrySelectValue } from '@/types/CountrySelect/CountrySelectTypes'
 import { compareString } from '@/libs/utils/util'
-import { Resposnse } from '@/types/ApiResponse/ApiResponseTypes'
-import { COMPANY_NAME, RENT_MODAL_DATA, VALID_RENT_SCREEN, categoriesToRender } from '@/constants/const'
+import { RENT_MODAL_DATA, VALID_RENT_SCREEN, categoriesToRender } from '@/constants/const'
 import { API, LISTING } from '@/constants/apiEndpoints'
 import { NEW_LISTING_CREATED_MESSAGE, NEW_LISTING_FAILED_MESSAGE } from '@/constants/generalMessage'
 import { RENT_MODAL_DATA_STRUCTURE } from '../../constants/const';
 
 
-const RentModal = () => {
+
+const RentModal: React.FC = () => {
     const router = useRouter();
     const params = useSearchParams();
+    const currentPath = usePathname();
 
     const [isLoading, setIsLoading] = useState(false);
     const [userMove, setUserMove] = useState(0);
@@ -72,6 +74,7 @@ const RentModal = () => {
 
     const { storeValues, removeItems, getValues } = useLocalStoarge();
     const { removeQuery, setQueryParams } = useQueryParams();
+    const isEditMode = params?.get("rent-modal") === "edit";
 
     const updateStatesValue = (id: string, value: string | number | CountrySelectValue) => {
         setValue(id, value, {
@@ -223,27 +226,35 @@ const RentModal = () => {
 
     const handleModalClose = () => {
         reset();
-        removeQuery({ key: ["screen", "rent-modal"] });
+        removeQuery({ key: ["screen", "rent-modal"], currentUrl: currentPath || "" });
         removeItems(RENT_MODAL_DATA);
-        rentModal.onClose();
         setUserMove(0);
+        rentModal.onClose();
     }
 
     const onSubmit: SubmitHandler<FieldValues> = async (payload) => {
         setIsLoading(true);
         try {
-            const url = API + LISTING;
-            let res: Resposnse = await axios.post(url, payload);
+            let url = API + LISTING;
+            let res;
+            if (isEditMode) {
+                const listingId = currentPath?.split("/")[2];
+                url = "/" + url + `/${listingId}`
+                res = await axios.patch(url, payload);
+            }
+            else {
+                res = await axios.post(url, payload);
+            }
             if (res?.data?.ok) {
-                toast.success(NEW_LISTING_CREATED_MESSAGE);
+                toast.success(isEditMode ? "Updated listing successfully!" : NEW_LISTING_CREATED_MESSAGE);
                 handleModalClose();
                 router?.refresh();
             }
             else {
-                toast.error(NEW_LISTING_FAILED_MESSAGE);
+                toast.error(isEditMode ? "Error occured while updating listing" : NEW_LISTING_FAILED_MESSAGE);
             }
         } catch (err) {
-            console.log("Error while creating new listing: " + err)
+            console.log(`Error while ${isEditMode ? "updating" : "creating"} new listing: ` + err)
 
         } finally {
             setIsLoading(false);
@@ -282,7 +293,8 @@ const RentModal = () => {
             setUserMove(prev => prev + 1);
             setQueryParams({
                 queryName: "screen",
-                value: `${userMove + 1}`
+                value: `${userMove + 1}`,
+                currentUrl: currentPath || "",
             });
             updateLocalDataFromCurrentState();
             return;
@@ -297,6 +309,9 @@ const RentModal = () => {
 
     const getNextStep = () => {
         if (userMove === STEPS.PRICE) {
+            if (isEditMode) {
+                return "Update";
+            }
             return "Create"
         }
         return "Next";
@@ -316,9 +331,12 @@ const RentModal = () => {
                 updateStatesValue(key, localData[key]);
             }
         }
+    }, [rentModal?.isOpen])
+
+    useEffect(() => {
         const rentModalParams = params?.get("rent-modal");
         const screen = params?.get("screen");
-        if (rentModalParams && compareString(rentModalParams, "open")) {
+        if (rentModalParams && (compareString(rentModalParams, "open") || compareString(rentModalParams, "edit"))) {
             rentModal?.onOpen();
         }
         if (screen && VALID_RENT_SCREEN?.includes(Number(screen))) {
@@ -335,7 +353,7 @@ const RentModal = () => {
             onSubmit={() => onClickNextOrBack(STEP_TYPES.NEXT)}
             secondaryActionLabel={getBackStep()}
             secondaryAction={() => onClickNextOrBack(STEP_TYPES.BACK)}
-            title={`Add your home`}
+            title={isEditMode ? "Update details" : 'Add your home'}
             body={bodyContent}
         />
     )

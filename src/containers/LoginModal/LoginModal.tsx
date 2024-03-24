@@ -13,14 +13,15 @@ import Heading from '@/components/Headers/Heading'
 import Input from '@/components/Input/Input'
 import Modal from '@/components/Modal/Modal'
 import useLoginModal from '@/hooks/useLoginModal'
-import { API, LOGIN } from '@/constants/apiEndpoints'
 import { COMPANY_NAME, CREDENTIALS } from '@/constants/const'
 import { LOGGED_IN_FAILED_MESSAGE, LOGGED_IN_MESSAGE } from '@/constants/generalMessage'
+import useRegisterModal from '@/hooks/useRegisterModal'
 
 // TODO: add password eye icon
 const LoginModal = () => {
 
     const loginModal = useLoginModal();
+    const registerModal = useRegisterModal();
     const [isLoading, setIsLoading] = useState(false);
     const router = useRouter();
 
@@ -48,9 +49,10 @@ const LoginModal = () => {
             if (res?.ok) {
                 toast.success(LOGGED_IN_MESSAGE);
                 router?.refresh();
+                loginModal.onClose();
                 return;
             }
-            toast.error(LOGGED_IN_FAILED_MESSAGE);            
+            toast.error(LOGGED_IN_FAILED_MESSAGE);
         } catch (err) {
             console.log("Error while loging user: " + err)
             toast.error(LOGGED_IN_FAILED_MESSAGE);
@@ -81,8 +83,13 @@ const LoginModal = () => {
         </div>
     )
 
+    const switchLoginToSignupModal=()=>{
+        loginModal?.onClose();
+        registerModal?.onOpen();
+    }
+
     const footerContent = (
-        <div className='flex flex-col gap-2'>
+        <div className='flex flex-col gap-2 justify-center items-center'>
             <Button
                 label='Google'
                 outline
@@ -97,6 +104,8 @@ const LoginModal = () => {
                 icon={AiFillGithub}
                 onClick={() => signIn('github')}
             />
+            <hr />
+            <p className='text-xs font-medium'>Are you a new user? <span className='text-xs font-bold cursor-pointer' onClick={switchLoginToSignupModal}>signup</span> </p>
         </div>
     )
 

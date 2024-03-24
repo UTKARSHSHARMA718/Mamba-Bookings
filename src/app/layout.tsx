@@ -1,13 +1,14 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 
-import Navbar from "@/components/Navbar/Navbar";
 import ModalsProvider from "@/providers/ModalsProvider";
+import Navbar from "@/components/Navbar/Navbar";
+import Providers from "@/Theme/Providers";
+import RemoveFilter from "@/components/RemoveFilter/RemoveFilter";
 import ToastProvider from "@/providers/ToastProvider";
 import { getCurrentUser } from "@/actions/getCurrentUser";
-import "./globals.css";
 import { COMPANY_NAME } from "@/constants/const";
-import RemoveFilter from "@/components/RemoveFilter/RemoveFilter";
+import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -27,11 +28,15 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <ModalsProvider />
-        <ToastProvider />
-        <RemoveFilter />
-        <Navbar {...{ currentUser }} />
-        {children}
+        <Providers>
+          <>
+            <ModalsProvider />
+            <ToastProvider />
+            <RemoveFilter />
+            <Navbar {...{ currentUser }} />
+            {children}
+          </>
+        </Providers>
       </body>
     </html>
   );

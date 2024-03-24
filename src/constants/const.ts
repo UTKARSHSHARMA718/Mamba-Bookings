@@ -148,3 +148,6 @@ export const searchFilters = [
 ];
 
 export const RENT_MODAL = "rent-modal";
+export const LIGHT = "light";
+export const DARK = "dark";
+export const PAGE_SIZE = 10;

@@ -1,0 +1,15 @@
+.inputField:placeholder-shown + .inputLabel {
+  top: 18px;
+  font-size: 12px;
+}
+
+.inputField:focus + .inputLabel {
+  top: 4px;
+  font-size: 10px;
+}
+
+.inputLabel {
+  top: 4px;
+  transition: all 0.2s linear;
+  font-size: 10px;
+}

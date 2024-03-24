@@ -19,11 +19,11 @@ const Counter: React.FC<CounterType> = ({
     isAddDisabled,
     isSubDisabled,
 }) => {
-    const disableStyles = 'opacity-60'
+    const disableStyles = 'opacity-60 cursor-not-allowed'
 
     return (
         <div
-            className='bg-slate-100 border-[1px] border-slate-200 rounded-xl flex flex-col md:flex-row justify-between p-2 gap-4'>
+            className='bg-slate-100 dark:bg-slate-900 border-[1px] border-slate-200 rounded-xl flex flex-col md:flex-row justify-between p-2 gap-8'>
             <div className='flex justify-center items-center'>
                 <p className='text-sm font-bold'>{label}</p>
             </div>
