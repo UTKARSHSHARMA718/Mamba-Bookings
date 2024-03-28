@@ -13,8 +13,11 @@ import Input from '@/components/Input/Input'
 import Modal from '@/components/Modal/Modal'
 import useLoginModal from '@/hooks/useLoginModal'
 import useRegisterModal from '@/hooks/useRegisterModal'
+import { isPasswordValid } from '@/libs/utils/util'
 import { API, SIGNUP } from '@/constants/apiEndpoints'
 import { COMPANY_NAME } from '@/constants/const'
+import PasswordStrengthPoints from '@/components/PasswordStrengthPoints/PasswordStrengthPoints'
+import PasswordInput from '@/components/PasswordInput/PasswordInput'
 
 const RegisterModal = () => {
 
@@ -22,7 +25,7 @@ const RegisterModal = () => {
     const loginModal = useLoginModal();
     const [isLoading, setIsLoading] = useState(false);
 
-    const { register, handleSubmit, formState: {
+    const { register, handleSubmit, watch, formState: {
         errors,
     } } = useForm<FieldValues>({
         defaultValues: {
@@ -32,6 +35,8 @@ const RegisterModal = () => {
         }
     });
 
+    const password = watch('password');
+
     const onSubmit: SubmitHandler<FieldValues> = async (payload) => {
         setIsLoading(true);
         try {
@@ -39,6 +44,7 @@ const RegisterModal = () => {
             let res = await axios.post(url, payload);
             if (res?.data?.ok) {
                 registerModal?.onClose(); // coming from zustan library
+                loginModal?.onOpen();
             }
         } catch (err) {
             console.log("Error while registering user: " + err)
@@ -66,14 +72,8 @@ const RegisterModal = () => {
                 type='email'
                 {...{ register, errors }}
             />
-            <Input
-                disabled={isLoading}
-                id='password'
-                label="Password"
-                type='password'
-                {...{ register, errors }}
-                required
-            />
+            <PasswordInput isRequired id='password' {...{ register, errors, isLoading }} />
+            <PasswordStrengthPoints input={password} />
         </div>
     )
 
@@ -106,7 +106,7 @@ const RegisterModal = () => {
 
     return (
         <Modal
-            disabled={isLoading}
+            disabled={isLoading || isPasswordValid(password)}
             isOpen={registerModal.isOpen}
             onClose={registerModal.onClose}
             actionLabel='SignIn'

@@ -1,5 +1,10 @@
+'use client'
+
 import React from 'react';
 import { BiSearch } from "react-icons/bi"
+
+import useWindowDimension from '@/hooks/useWindowDimensions';
+import { SMALL_SCREEN_SEARCH_BAR_HEADING } from '@/constants/const';
 
 type SearchProps = {
   onClickAnywhere: () => void;
@@ -14,6 +19,9 @@ const SearchBar: React.FC<SearchProps> = ({
   onClickGuets,
   onSearchClick,
 }) => {
+  const { windowSize } = useWindowDimension();
+  const isSmallScreen = windowSize?.width <= 768;
+
   const options: { text: string; onClick: () => void }[] = [
     {
       text: "Anywhere",
@@ -31,6 +39,7 @@ const SearchBar: React.FC<SearchProps> = ({
 
   return (
     <div
+      onClick={isSmallScreen ? onSearchClick : () => { }}
       className={`
       w-full 
       justify-between 
@@ -42,6 +51,8 @@ const SearchBar: React.FC<SearchProps> = ({
       rounded-full 
       gap-2  
       max-w-[400px]
+      cursor-pointer
+      md:cursor-default
       hover:shadow-md
       dark:bg-slate-900
       dark:hover:shadow-slate-200
@@ -50,10 +61,10 @@ const SearchBar: React.FC<SearchProps> = ({
         options.map((option, index, array) => {
           const totalElements = array?.length;
           return <React.Fragment key={index}>
-            <p 
-            onClick={option?.onClick}
-            key={index} 
-            className={`p-1 ${index === 0 ? 'block' : 'hidden'} 
+            <p
+              onClick={option?.onClick}
+              key={index}
+              className={`p-1 ${index === 0 ? 'block' : 'hidden'} 
             sm:block 
             text-sm 
             font-semibold 
@@ -62,7 +73,7 @@ const SearchBar: React.FC<SearchProps> = ({
             hover:text-black
             dark:hover:text-white
             `}>
-              {option?.text}
+              {isSmallScreen ? SMALL_SCREEN_SEARCH_BAR_HEADING : option?.text}
             </p>
             {
               index !== totalElements - 1 && <div className='hidden sm:block min-w-[1px] min-h-[16px] bg-slate-400'></div>

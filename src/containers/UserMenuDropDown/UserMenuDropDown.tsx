@@ -1,6 +1,6 @@
 'use client'
 
-import React from 'react';
+import React, { useCallback } from 'react';
 import { signOut } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { useTheme } from 'next-themes';
@@ -31,6 +31,11 @@ const UserMenuDropDown: React.FC<UserMenuDropDownTypes> = React.forwardRef(({ is
         userUserMenuDropDown?.onClose();
     }
 
+    const handleLogout= useCallback(()=>{
+        signOut?.();
+        router?.refresh();
+    }, [router, signOut])
+
     const menuItemsForNonLoggedInUser: { text: string; onClick: () => void }[] =
         [
             { text: 'Login', onClick: () => onOptionClick(loginModalProperties.onOpen) },
@@ -60,7 +65,7 @@ const UserMenuDropDown: React.FC<UserMenuDropDownTypes> = React.forwardRef(({ is
             },
             {
                 text: 'Logout',
-                onClick: () => signOut(),
+                onClick: handleLogout,
             },
         ];
 
@@ -103,7 +108,7 @@ const UserMenuDropDown: React.FC<UserMenuDropDownTypes> = React.forwardRef(({ is
             {menuList?.map((item, index) => {
                 if (item?.text === "Logout") {
                     return <>
-                        <div style={{ width: "100%", minHeight: "1px", backgroundColor: "grey" }}>
+                        <div key={item?.text} style={{ width: "100%", minHeight: "1px", backgroundColor: "grey" }}>
                         </div>
                         <MenuItem label={item?.text} onClick={item?.onClick} key={index} customStyles='border-[1px] border-slate-400' />
                     </>

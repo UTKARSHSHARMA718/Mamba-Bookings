@@ -20,7 +20,7 @@ export const getReservations = async (props: IProps) => {
     }
 
     if (authorId) {
-      query.authorId = authorId;
+      query.listing = { userId: authorId };
     }
 
     if (listingId) {
@@ -28,13 +28,12 @@ export const getReservations = async (props: IProps) => {
     }
     const cacheKey = JSON.stringify(props);
     const cachedData: string = (await redis.get(cacheKey)) as string;
-    if (cachedData) {
-      return cachedData;
-    }
+    // if (cachedData) {
+    //   return cachedData;
+    // }
 
     const reservations = await prisma?.reservation.findMany({
       where: query,
-      //   TODO: what does below code means/do?
       include: {
         listing: true,
       },
@@ -57,7 +56,7 @@ export const getReservations = async (props: IProps) => {
     });
 
     await redis.set(cacheKey, JSON.stringify(safeReservations), {
-      ex: 3600,// 1hr expiery time
+      ex: 60, // 1min expiery time
     });
 
     return safeReservations;

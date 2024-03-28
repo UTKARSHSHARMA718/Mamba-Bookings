@@ -5,6 +5,7 @@ import ListingHeadingAndImage from '@/containers/ListingHeadingAndImage/ListingH
 import ListingInfo from '@/containers/ListingInfo/ListingInfo';
 import { getCurrentUser } from '@/actions/getCurrentUser';
 import { getListing } from '@/actions/getListing';
+import EmptyPage from '@/components/EmptyPage/EmptyPage';
 
 type ListingPageProps = {
     params: {
@@ -17,13 +18,24 @@ const ListingPage: React.FC<ListingPageProps> = async ({ params }) => {
     const user = await getCurrentUser();
     const listingDetails = await getListing({ listingId });
 
+    console.log({ listingDetails, listingId });
+
+    if (!listingDetails) {
+        return <EmptyPage
+            title='Something went wrong'
+            description='Please try again after some time, sorry for this mishappening'
+        />
+    }
+
+
     return (
         <div>
-            <ListingHeadingAndImage 
-                currentUser={user} 
-                listingData={listingDetails} 
+            <ListingHeadingAndImage
+                currentUser={user}
+                listingData={listingDetails}
             />
-            <ListingInfo />
+            <ListingInfo reservations={listingDetails?.reservations} currentUser={user}
+                listingData={listingDetails} />
         </div>
     )
 }

@@ -15,6 +15,7 @@ export const getListing = async ({ listingId }: IGetListing) => {
     const data = await prisma?.listing?.findUnique({
       include:{
         user: true,
+        reservations: true,
       },
       where: {
         id: listingId,

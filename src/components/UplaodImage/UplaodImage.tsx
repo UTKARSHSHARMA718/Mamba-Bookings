@@ -33,6 +33,7 @@ const UplaodImage: React.FC<UploadImage> = ({ onSuccessFulUpload, imgSrc }) => {
                             justify-center
                             items-center
                             bg-slate-100
+                            dark:bg-slate-600
                             p-2
                             border-[1px]
                             rounded-xl

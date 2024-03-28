@@ -10,17 +10,13 @@ import ProductCard from '@/components/ProductCard/ProductCard'
 import { API, RESERVATIONS } from '@/constants/apiEndpoints'
 import { GENERAL_ERROR_MESSAGE } from '@/constants/errorMessage'
 import { SafeUser } from '@/types/DataBaseModes/DataBaseModes'
-import { Listing, Reservation } from '@prisma/client'
+import { CompleteReservationDataType } from '../../types/DataBaseModes/DataBaseModes';
 
 
-type CompleteReservationDataType = {
-    reservation: Omit<Reservation, "listing"> & {
-        listing: Listing
-    }
-}
+
 
 type ReservationsListingProps = {
-    allReservationsOfUser: Array<CompleteReservationDataType>[],
+    allReservationsOfUser: CompleteReservationDataType[],
     user: SafeUser,
 }
 

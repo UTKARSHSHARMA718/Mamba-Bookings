@@ -1,10 +1,7 @@
+import { DARK } from '@/constants/const';
+import { useTheme } from 'next-themes';
 import React from 'react'
 import { IconType } from 'react-icons';
-
-import { RENT_MODAL_DATA, SELECTED_CATEGORY } from '@/constants/const';
-import useLocalStoarge from '@/hooks/useLocalStorage';
-import { RENT_MODAL_DATA_STRUCTURE } from '../../constants/const';
-
 
 type CategoryType = {
     icon: IconType;
@@ -15,7 +12,9 @@ type CategoryType = {
 
 const CategoryInput: React.FC<CategoryType> =
     ({ icon: Icon, label, isSelected, onClick = () => { } }) => {
-        const isSelectedStyles = isSelected ? 'border-black' : 'border-slate-200';
+        const { theme } = useTheme();
+        const isDarkTheme = theme === DARK;
+        const isSelectedStyles = (isDarkTheme ? !isSelected : isSelected) ? 'border-black' : 'border-slate-200';
 
         return (
             <div

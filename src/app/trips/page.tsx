@@ -1,12 +1,13 @@
-import { getCurrentUser } from '@/actions/getCurrentUser';
-import { getFavouriteListing } from '@/actions/getFavouriteListings';
-import EmptyPage from '@/components/EmptyPage/EmptyPage';
 import React from 'react'
 
-const Trips = async() => {
+import TripsListing from '@/containers/TripsListing/TripsListing';
+import EmptyPage from '@/components/EmptyPage/EmptyPage';
+import { getCurrentUser } from '@/actions/getCurrentUser';
+import { getReservations } from '@/actions/getReservations';
 
-    // TODO: I'm repeating my-self on main pages, please make a single page for all the different page later once project is ready to deployed
-    const allfavoriteListings = await getFavouriteListing();
+const Trips = async () => {
+
+    // TODO: I'm repeating my-self on main pages, please make a single page for all the different page later once project is ready to deploy
     const user = await getCurrentUser();
 
     if (!user) {
@@ -16,15 +17,17 @@ const Trips = async() => {
         />
     }
 
-    if (!allfavoriteListings || !allfavoriteListings?.length) {
+    const trips = await getReservations({ userId: user.id })||[]
+
+    if (!trips || !trips?.length) {
         return <EmptyPage
-            title='No favorite listing found!'
-            description='Please add some listing to favourite to see them here.'
+            title='No trips found!'
+            description='Please add some trips to see them here.'
         />
     }
 
     return (
-        <div>Trips</div>
+        <TripsListing {...{ user, trips }} />
     )
 }
 

@@ -7,8 +7,10 @@ type ToggleButtonProps = {
     label?: string;
     onTurnOn: () => void;
     onTurnOFF: () => void;
-    turnOnIcon?: IconType,
-    turnOFFIcon?: IconType,
+    turnOnIcon?: IconType;
+    turnOFFIcon?: IconType;
+    buttonOnOff: boolean;
+    setButtonOnOff: (v: boolean) => void;
 }
 
 const ToggleButton: React.FC<ToggleButtonProps> = ({
@@ -17,8 +19,9 @@ const ToggleButton: React.FC<ToggleButtonProps> = ({
     onTurnOn,
     turnOnIcon: TurnOnIcon,
     turnOFFIcon: TurnOffIcon,
+    buttonOnOff = false,
+    setButtonOnOff,
 }) => {
-    const [buttonOnOff, setButtonOnOff] = useState(false);
 
     const toggleHandler = useCallback(() => {
         if (buttonOnOff) {

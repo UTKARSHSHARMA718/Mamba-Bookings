@@ -7,3 +7,4 @@ export const LISTING = "/listing";
 export const CREATE = "/create";
 export const FAVOURITE = "/favourite";
 export const RESERVATIONS = "/reservations";
+export const TRIPS = "/trips";

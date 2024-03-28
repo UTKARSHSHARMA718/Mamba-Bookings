@@ -34,9 +34,6 @@ const Modal: React.FC<ModalProps> = ({
     }, [disabled, onSubmit]);
 
     const handleOnClose = useCallback(() => {
-        if (disabled) {
-            return;
-        }
 
         onClose && onClose();
     }, [disabled, onClose]);
@@ -74,8 +71,6 @@ const Modal: React.FC<ModalProps> = ({
                     flex
                     justify-center
                     items-center 
-                    w-full
-                    md:w-4/6
                     lg:w-3/6
                     xl:w-2/5
                     my-6
@@ -83,6 +78,8 @@ const Modal: React.FC<ModalProps> = ({
                     h-full 
                     lg:h-auto
                     md:h-auto
+                    w-11/12
+                    md:w-full
                     ">
                         {/* Container */}
                         <div
@@ -96,12 +93,14 @@ const Modal: React.FC<ModalProps> = ({
                             bg-white
                             dark:bg-slate-900
                             rounded-lg
-                            p-2
+                            p-0
+                            md:p-2
                             max-h-[800px]
                             max-w-[500px]
                             min-w-[250px]
                             transition
                             duration-300
+                            w-full
                             ${showModal ? "translate-y-0" : "translate-y-full"}
                             ${showModal ? "opacity-100" : "opacity-0"}
                         `}>
@@ -151,7 +150,7 @@ const Modal: React.FC<ModalProps> = ({
                             </div>
 
                             {/* Body */}
-                            <div className="relative p-6 flex-auto w-full">
+                            <div className="relative p-4 md:p-6 flex-auto w-full">
                                 {body}
                             </div>
 

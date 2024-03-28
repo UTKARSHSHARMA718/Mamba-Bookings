@@ -28,7 +28,7 @@ const ListingReservations: React.FC<ListingReservationsProps> = ({
     return (
         <div className="
         bg-white
-        dark:bg-black
+        dark:bg-slate-700
         rounded-xl
         border-[1px]
         border-neutral-200
@@ -44,6 +44,7 @@ const ListingReservations: React.FC<ListingReservationsProps> = ({
             justify-center
             gap-1
             p-2
+            dark:bg-slate-700
             ">
                 <div className="
                 text-xl 

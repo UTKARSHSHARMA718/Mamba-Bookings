@@ -47,7 +47,7 @@ export const authOptions: AuthOptions = {
           throw new Error("User not found!");
         }
 
-        // NOTE: checking password
+        // NOTE: Checking password
         const isPasswordSame = await bcrypt.compare(
           credentials.password,
           user?.hashsedPassword

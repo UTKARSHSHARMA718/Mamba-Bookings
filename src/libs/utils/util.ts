@@ -1,3 +1,5 @@
+import { PASSWORD_REGEX } from "@/constants/regex";
+
 export const getSelectedCategory = (strValues: string) => {
   if (!strValues) {
     return "";
@@ -35,4 +37,12 @@ export const humanReadableDateFormate = (timeStamp: string) => {
   }${day}`;
 
   return humanReadableFormat;
+};
+
+export const isPasswordValid = (input: string) => {
+  return !(
+    PASSWORD_REGEX?.test(input) &&
+    input?.length >= 8 &&
+    input?.length <= 16
+  );
 };

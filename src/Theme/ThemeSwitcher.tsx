@@ -11,9 +11,11 @@ import { DARK, LIGHT } from "@/constants/const";
 const ThemeSwitcher = () => {
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
+  const [buttonOnOff, setButtonOnOff] = useState(false);
 
   useEffect(() => {
     setMounted(true);
+    setButtonOnOff(theme === DARK);
   }, []);
 
   if (!mounted) {
@@ -21,7 +23,7 @@ const ThemeSwitcher = () => {
   }
 
   return (
-    <ToggleButton onTurnOFF={() => setTheme(LIGHT)} onTurnOn={() => setTheme(DARK)} turnOnIcon={BsFillMoonStarsFill} turnOFFIcon={RiSunLine} />
+    <ToggleButton onTurnOFF={() => setTheme(LIGHT)} onTurnOn={() => setTheme(DARK)} turnOnIcon={BsFillMoonStarsFill} turnOFFIcon={RiSunLine} {...{ buttonOnOff, setButtonOnOff }} />
   );
 };
 

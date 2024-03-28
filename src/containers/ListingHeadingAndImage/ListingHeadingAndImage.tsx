@@ -8,11 +8,11 @@ import { usePathname } from 'next/dist/client/components/navigation';
 import Button from '@/components/Button/Button';
 import Heading from '@/components/Headers/Heading';
 import HeartButton from '@/components/HeartButton/HeartButton';
-import { Listing } from '@prisma/client'
-import { SafeUser } from '@/types/DataBaseModes/DataBaseModes';
 import useLocalStoarge from '@/hooks/useLocalStorage';
 import useQueryParams from '@/hooks/useQueryParams';
 import useRentModal from '@/hooks/useRentModal';
+import { Listing } from '@prisma/client'
+import { SafeUser } from '@/types/DataBaseModes/DataBaseModes';
 import { RENT_MODAL_DATA } from '@/constants/const';
 import styles from './ListingHeadingAndImage.module.css';
 import commonStyles from "@/common/styles/commonStyls.module.css";
@@ -71,7 +71,8 @@ const ListingHeadingAndImage: React.FC<ListingHeadingAndImage> = ({
                 </div>
                 <div className='w-full h-full relative'>
                     <Image src={listingData?.imageSrc || ""} fill alt={`${listingData?.title}-image`}
-                        className='w-full h-full rounded-xl'
+                        className='w-full h-full rounded-xl max-h-[600px]'
+                        style={{maxHeight: 600}}
                     />
                     <div className={styles.heartBtnContainer}>
                         <HeartButton listingId={listingData?.id || ""}  {...{ currentUser }} />

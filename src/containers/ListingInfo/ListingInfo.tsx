@@ -3,24 +3,20 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import toast from 'react-hot-toast';
 import dynamic from 'next/dynamic';
-import { useParams } from 'next/navigation';
 import { useRouter } from 'next/navigation';
 import axios from 'axios';
 import { differenceInCalendarDays, eachDayOfInterval } from 'date-fns';
 
+// TODO: remove shimmer UI for ListingInfo component
 import Avatar from '@/components/Avatar/Avatar';
-import EmptyPage from '@/components/EmptyPage/EmptyPage';
 import ListingReservations from '../ListingReservations/ListingReservations';
-import Loader from '@/components/Loader/Loader';
 import useCountryInfo from '@/hooks/useCountryInfo';
 import useLoginModal from '@/hooks/useLoginModal';
-import { getCurrentUser } from '@/actions/getCurrentUser';
-import { getListing } from '@/actions/getListing';
-import {  Reservation } from '@prisma/client'
+import { Listing, Reservation } from '@prisma/client'
 import { compareString } from '@/libs/utils/util';
 import { Resposnse } from '@/types/ApiResponse/ApiResponseTypes';
 import { NEW_RESERVATIONS_CREATED_MESSAGE } from '@/constants/generalMessage';
-import { CompleteListingDataType, SafeUser } from '@/types/DataBaseModes/DataBaseModes';
+import { SafeUser } from '@/types/DataBaseModes/DataBaseModes';
 import { GENERAL_ERROR_MESSAGE } from '@/constants/errorMessage';
 import { categoriesToRender, initialDateRange } from '@/constants/const';
 import { API, RESERVATIONS } from '@/constants/apiEndpoints';
@@ -28,22 +24,16 @@ import commonStyles from "@/common/styles/commonStyls.module.css";
 
 const Map = dynamic(() => import('@/components/Map/Map'), {
     ssr: false
-})
+});
 
 type ListingInfoTypes = {
     reservations?: Reservation[];
+    currentUser: SafeUser | null;
+    listingData: Listing | null;
 }
 
-const ListingInfo: React.FC<ListingInfoTypes> = ({ reservations }) => {
-    const params = useParams();
+const ListingInfo: React.FC<ListingInfoTypes> = ({ reservations, currentUser, listingData }) => {
     const router = useRouter();
-
-    const [userData, setUserData] = useState<SafeUser | null>(null);
-    const [listingData, setListingData] = useState<CompleteListingDataType | null>(null);
-    const [userError, setUserError] = useState("");
-    const [listingError, setListingError] = useState("");
-    const [isUserLoading, setIsUserLoading] = useState(false);
-    const [isListingLoading, setIsListingLoading] = useState(false);
 
     const { getCountryByValue } = useCountryInfo();
     const loginModal = useLoginModal();
@@ -65,12 +55,10 @@ const ListingInfo: React.FC<ListingInfoTypes> = ({ reservations }) => {
     const [isLoadingReservation, setIsLoadingReservation] = useState(false);
 
     const createNewReservation = useCallback(async () => {
-
-        if (!userData) {
+        if (!currentUser) {
             loginModal?.onOpen();
             return;
         }
-
         setIsLoadingReservation(true);
         try {
             const url = `/${API}${RESERVATIONS}`;
@@ -83,6 +71,7 @@ const ListingInfo: React.FC<ListingInfoTypes> = ({ reservations }) => {
             const res: Resposnse = await axios.post(url, payload);
             if (res?.data?.ok) {
                 toast?.success(NEW_RESERVATIONS_CREATED_MESSAGE);
+                setDateRange(initialDateRange);
                 router?.refresh();
                 return;
             }
@@ -93,7 +82,7 @@ const ListingInfo: React.FC<ListingInfoTypes> = ({ reservations }) => {
         } finally {
             setIsLoadingReservation(false);
         }
-    }, [listingData?.id, dateRange, totalPrice, loginModal])
+    }, [listingData?.id, dateRange, totalPrice, loginModal, toast])
 
     const category = useMemo(() => {
         return categoriesToRender?.find(item => compareString(item?.label, listingData?.category || ""));
@@ -102,44 +91,6 @@ const ListingInfo: React.FC<ListingInfoTypes> = ({ reservations }) => {
     const coordinates = useMemo(() => {
         return getCountryByValue(listingData?.locationValue || "")[0]?.latlgn || [0, 0];
     }, [listingData]);
-
-    const getUserData = async () => {
-        setIsUserLoading(true);
-        try {
-            const res = await getCurrentUser();
-            if (res) {
-                setUserData(res);
-                return;
-            }
-            setUserError(GENERAL_ERROR_MESSAGE);
-        } catch (err: any) {
-            setUserError(err?.message || err);
-        } finally {
-            setIsUserLoading(false);
-        }
-    }
-
-    const getListingData = async () => {
-        setIsListingLoading(true);
-        const listingId = params?.listingId as string;
-        try {
-            const res = await getListing({ listingId });
-            if (res) {
-                setListingData(res);
-                return;
-            }
-            setListingError(GENERAL_ERROR_MESSAGE);
-        } catch (err: any) {
-            setListingError(err?.message || err);
-        } finally {
-            setIsListingLoading(false);
-        }
-    }
-
-    useEffect(() => {
-        getUserData();
-        getListingData();
-    }, [])
 
     useEffect(() => {
         if (dateRange?.startDate && dateRange?.endDate) {
@@ -152,26 +103,14 @@ const ListingInfo: React.FC<ListingInfoTypes> = ({ reservations }) => {
         }
     }, [dateRange?.endDate, dateRange?.startDate, listingData?.price])
 
-    const isLoading = isUserLoading || isListingLoading;
     const Icon = category?.icon;
-
-    if (listingError) {
-        return <EmptyPage
-            title='Something went wrong'
-            description='Please try again after some time, sorry for this mis-happening'
-        />
-    }
-
-    if (isLoading) {
-        return <Loader />
-    }
 
     const ShowCountProperties = ({ propertyNames, countValue }: { propertyNames: string, countValue: number }) => {
         return <p className='text-xs text-slate-300 font-medium'>{countValue} {propertyNames}</p>
     }
 
     return (
-        <div className={`${commonStyles.container} p-6 flex gap-6 w-full m-auto`}>
+        <div className={`${commonStyles.container} p-6 flex-col md:flex-row flex gap-6 w-full m-auto`}>
             <div className='w-1/2 flex flex-col gap-6'>
                 <div
                     style={{ maxWidth: "250px" }}

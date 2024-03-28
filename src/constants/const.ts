@@ -151,3 +151,4 @@ export const RENT_MODAL = "rent-modal";
 export const LIGHT = "light";
 export const DARK = "dark";
 export const PAGE_SIZE = 10;
+export const SMALL_SCREEN_SEARCH_BAR_HEADING = "Find your place";

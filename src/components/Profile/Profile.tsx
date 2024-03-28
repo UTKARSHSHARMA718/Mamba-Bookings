@@ -31,7 +31,7 @@ const Profile: React.FC<ProfileTypes> = ({ isUserLoggedIn, openRentModalHandler 
 
   return (
     // @ts-ignore
-    <div ref={shouldNotConsiderRef} className='p-2 relative cursor-pointer border rounded-3xl flex gap-3 justify-center items-center hover:shadow-md' onClick={toggleMenu}
+    <div ref={shouldNotConsiderRef} className='p-2 relative cursor-pointer border rounded-3xl flex gap-3 justify-center items-center hover:shadow-md dark:hover:shadow-white' onClick={toggleMenu}
     >
       <AiOutlineMenu />
       <div>

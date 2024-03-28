@@ -16,9 +16,11 @@ const EmptyPage:React.FC<EmptyPageProps> = ({
     h-full
     flex
     flex-col
+    items-start
     justify-center
-    items-center
+    md:items-center
     gap-6
+    p-6
     ">
         <p className="text-xl font-bold">{title}</p>
         <div>

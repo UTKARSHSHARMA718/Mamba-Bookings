@@ -15,7 +15,7 @@ const Reservations = async () => {
         />
     }
 
-    const allReservationsOfUser = await getReservations({ userId: user?.id });
+    const allReservationsOfUser = await getReservations({ authorId: user?.id });
 
     if (!allReservationsOfUser || !allReservationsOfUser?.length) {
         return <EmptyPage

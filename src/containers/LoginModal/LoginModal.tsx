@@ -16,6 +16,10 @@ import useLoginModal from '@/hooks/useLoginModal'
 import { COMPANY_NAME, CREDENTIALS } from '@/constants/const'
 import { LOGGED_IN_FAILED_MESSAGE, LOGGED_IN_MESSAGE } from '@/constants/generalMessage'
 import useRegisterModal from '@/hooks/useRegisterModal'
+import PasswordStrengthPoints from '@/components/PasswordStrengthPoints/PasswordStrengthPoints'
+import { PASSWORD_REGEX } from '@/constants/regex'
+import { isPasswordValid } from '@/libs/utils/util'
+import PasswordInput from '@/components/PasswordInput/PasswordInput'
 
 // TODO: add password eye icon
 const LoginModal = () => {
@@ -26,6 +30,7 @@ const LoginModal = () => {
     const router = useRouter();
 
     const {
+        watch,
         register,
         handleSubmit,
         formState: {
@@ -37,6 +42,8 @@ const LoginModal = () => {
             password: "",
         }
     });
+
+    const password = watch('password');
 
     const onSubmit: SubmitHandler<FieldValues> = async (payload) => {
         setIsLoading(true);
@@ -72,18 +79,12 @@ const LoginModal = () => {
                 type='email'
                 {...{ register, errors }}
             />
-            <Input
-                disabled={isLoading}
-                id='password'
-                label="Password"
-                type='password'
-                {...{ register, errors }}
-                required
-            />
+            <PasswordInput isRequired id='password' {...{ register, errors, isLoading }} />
+            <PasswordStrengthPoints input={password} />
         </div>
     )
 
-    const switchLoginToSignupModal=()=>{
+    const switchLoginToSignupModal = () => {
         loginModal?.onClose();
         registerModal?.onOpen();
     }
@@ -110,9 +111,10 @@ const LoginModal = () => {
     )
 
 
+
     return (
         <Modal
-            disabled={isLoading}
+            disabled={isLoading || isPasswordValid(password)}
             isOpen={loginModal.isOpen}
             onClose={loginModal.onClose}
             actionLabel='Login'
