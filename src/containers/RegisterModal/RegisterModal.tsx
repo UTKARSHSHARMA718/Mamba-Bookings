@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
+import toast from 'react-hot-toast'
 import { AiFillGithub } from 'react-icons/ai'
 import { FcGoogle } from 'react-icons/fc'
 import { FieldValues, SubmitHandler, useForm } from 'react-hook-form'
@@ -45,10 +46,14 @@ const RegisterModal = () => {
             if (res?.data?.ok) {
                 registerModal?.onClose(); // coming from zustan library
                 loginModal?.onOpen();
+                toast?.success(res?.data?.message);
+                return;
             }
-        } catch (err) {
+            toast?.error(res?.data?.message);
+        } catch (err: any) {
+            console.error({err});
             console.log("Error while registering user: " + err)
-
+            toast?.error(err?.response?.data?.message || err);
         } finally {
             setIsLoading(false);
         }

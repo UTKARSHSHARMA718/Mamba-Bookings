@@ -25,7 +25,7 @@ const useGetCurrentUser = ({
       }
       setUserError(GENERAL_ERROR_MESSAGE);
     } catch (err: any) {
-      setUserError(err?.message || err);
+      setUserError(err?.response?.data?.message || err);
     } finally {
       setIsUserLoading(false);
     }

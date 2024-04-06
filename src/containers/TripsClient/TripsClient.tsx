@@ -38,7 +38,7 @@ const TripsClient: React.FC<TripsClintTypes> = ({
             }
             toast.error(GENERAL_ERROR_MESSAGE);
         } catch (err: any) {
-            toast.error(err?.message);
+            toast.error(err?.response?.data?.message);
         } finally {
             setIsDeletingUser("");
         }

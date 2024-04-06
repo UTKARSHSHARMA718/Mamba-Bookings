@@ -210,7 +210,7 @@ export const NotifyMessageToOwner = `
 <p style="margin: 0; word-break: break-word;"><span>Without you people we are nothing.</span></p>
 <p style="margin: 0; word-break: break-word;"> </p>
 <p style="margin: 0; word-break: break-word;"><span>We would like to take this time to thank you for choosing our platform for renting your property.</span></p>
-<p style="margin: 0; word-break: break-word;"><span>and we hope to see you growing at Mamaba bookings.</span></p>
+<p style="margin: 0; word-break: break-word;"><span>and we hope to see you growing at Mamba bookings.</span></p>
 <p style="margin: 0; word-break: break-word;"> </p>
 </div>
 </td>

@@ -34,7 +34,7 @@ const TripsListing: React.FC<TripsListingProps> = ({
             }
             toast.error("Something went wrong!");
         } catch (err: any) {
-            toast.error(err?.message || err);
+            toast.error(err?.response?.data?.message || err);
         }
     }, [toast, axios])
 

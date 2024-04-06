@@ -3,7 +3,6 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import { useTheme } from 'next-themes';
 import { format } from 'date-fns';
 
 import Button from '../Button/Button';
@@ -14,7 +13,7 @@ import { LISTING } from '@/constants/routeNames';
 import { Reservation } from '@prisma/client';
 import { SafeUser } from '@/types/DataBaseModes/DataBaseModes';
 
-type ProductCardType = {
+type ProductCardProps = {
     price: number;
     imgSrc: string;
     listingId: string;
@@ -27,7 +26,7 @@ type ProductCardType = {
     category: string;
 }
 
-const ProductCard: React.FC<ProductCardType> = ({
+const ProductCard: React.FC<ProductCardProps> = React.forwardRef(({
     price,
     imgSrc,
     listingId,
@@ -38,13 +37,11 @@ const ProductCard: React.FC<ProductCardType> = ({
     currentUser,
     locationValue,
     category,
-}) => {
+}, ref) => {
     const dummyImageUrl = '/images/fallback image.jpg'; // TODO: provide dummy URL
     const router = useRouter();
 
     const [mounted, setMounted] = useState(false);
-
-
 
     const { getCountryByValue } = useCountryInfo();
     const location = getCountryByValue(locationValue);
@@ -53,10 +50,8 @@ const ProductCard: React.FC<ProductCardType> = ({
         if (!reservation) {
             return;
         }
-
         const start = new Date(reservation.startDate);
         const end = new Date(reservation.endDate);
-
         return `${format(start, 'PP')} - ${format(end, 'PP')}`;
     }, [reservation?.startDate, reservation?.endDate]);
 
@@ -78,7 +73,9 @@ const ProductCard: React.FC<ProductCardType> = ({
     }
 
     return (
+        // @ts-ignore
         <div
+            {...{ref}}
             onClick={() => router.push(`${LISTING}/${listingId}`)}
             className={`
             p-6
@@ -140,6 +137,6 @@ const ProductCard: React.FC<ProductCardType> = ({
             </div>
         </div>
     )
-}
+})
 
 export default ProductCard

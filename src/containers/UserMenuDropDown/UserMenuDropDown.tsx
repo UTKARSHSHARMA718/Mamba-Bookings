@@ -31,7 +31,7 @@ const UserMenuDropDown: React.FC<UserMenuDropDownTypes> = React.forwardRef(({ is
         userUserMenuDropDown?.onClose();
     }
 
-    const handleLogout= useCallback(()=>{
+    const handleLogout = useCallback(() => {
         signOut?.();
         router?.refresh();
     }, [router, signOut])
@@ -107,11 +107,11 @@ const UserMenuDropDown: React.FC<UserMenuDropDownTypes> = React.forwardRef(({ is
         >
             {menuList?.map((item, index) => {
                 if (item?.text === "Logout") {
-                    return <>
-                        <div key={item?.text} style={{ width: "100%", minHeight: "1px", backgroundColor: "grey" }}>
+                    return <React.Fragment key={index}>
+                        <div style={{ width: "100%", minHeight: "1px", backgroundColor: "grey" }}>
                         </div>
-                        <MenuItem label={item?.text} onClick={item?.onClick} key={index} customStyles='border-[1px] border-slate-400' />
-                    </>
+                        <MenuItem label={item?.text} onClick={item?.onClick} customStyles='border-[1px] border-slate-400' />
+                    </React.Fragment>
                 }
                 return <MenuItem label={item?.text} onClick={item?.onClick} key={index} />
             })}

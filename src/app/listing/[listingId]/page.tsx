@@ -18,8 +18,6 @@ const ListingPage: React.FC<ListingPageProps> = async ({ params }) => {
     const user = await getCurrentUser();
     const listingDetails = await getListing({ listingId });
 
-    console.log({ listingDetails, listingId });
-
     if (!listingDetails) {
         return <EmptyPage
             title='Something went wrong'

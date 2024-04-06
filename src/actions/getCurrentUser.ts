@@ -1,8 +1,9 @@
 "use server";
 
 import { getServerSession } from "next-auth";
-import { authOptions } from "../../pages/api/auth/[...nextauth]";
+
 import prisma from "@/libs/prismaDB";
+import { authOptions } from "../../pages/api/auth/[...nextauth]";
 import { SafeUser } from "@/types/DataBaseModes/DataBaseModes";
 
 const getSession = async () => {

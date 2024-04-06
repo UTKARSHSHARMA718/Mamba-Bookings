@@ -98,5 +98,6 @@ export const getAllListing = async (props: GetAllListingProps) => {
     return { data: allListings, total: allListings?.length };
   } catch (err) {
     console.log("Error while getting all the listings: " + err);
+    return null;
   }
 };

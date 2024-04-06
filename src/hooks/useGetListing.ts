@@ -29,7 +29,7 @@ const useGetListing = ({
       }
       setListingError(GENERAL_ERROR_MESSAGE);
     } catch (err: any) {
-      setListingError(err?.message || err);
+      setListingError(err?.response?.data?.message || err);
     } finally {
       setIsListingLoading(false);
     }

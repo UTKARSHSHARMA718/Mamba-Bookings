@@ -6,7 +6,7 @@ export function middleware(request: NextRequest) {
 
   console.log({ allCookies });
 
-  return NextResponse.redirect(new URL("/", request.url));
+  return NextResponse.next();
 }
 
 export const config = {

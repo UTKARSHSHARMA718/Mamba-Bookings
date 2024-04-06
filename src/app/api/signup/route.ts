@@ -19,8 +19,27 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // NOTE: generating hashed password
+    const userEmail = await prisma.user?.findMany({
+      where: {
+        email: {
+          equals: body?.email,
+          mode: "insensitive",
+        },
+      },
+    });
 
+    if(userEmail?.length){
+      return NextResponse?.json(
+        {
+          ok: false,
+          message: "Email is already exist.",
+          data: null,
+        },
+        { status: 400 }
+      );
+    }
+
+    // NOTE: generating hashed password
     const hashedPasswordFromBrcypt = await bcrypt?.hash(
       body.password,
       ROUNDES_FOR_HASHING_PASSWORD

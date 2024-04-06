@@ -77,7 +77,7 @@ const ListingInfo: React.FC<ListingInfoTypes> = ({ reservations, currentUser, li
             }
             toast?.error(GENERAL_ERROR_MESSAGE);
         } catch (err: any) {
-            toast?.error(err?.message || err);
+            toast?.error(err?.response?.data?.message || err);
             console.log("Error while creating new reservation: " + err);
         } finally {
             setIsLoadingReservation(false);
