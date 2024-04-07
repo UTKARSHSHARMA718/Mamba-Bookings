@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 
 import prisma from "@/libs/prismaDB";
 import { Reservation } from "@prisma/client";
+import { sendMail, sendMailForNewPropertyReview } from "@/libs/mail/sendMail";
+import { humanReadableDateFormate } from "@/libs/utils/util";
 
 export async function POST(req: NextRequest) {
   try {
@@ -14,16 +16,27 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const usersAllReservations = await prisma.user.findUnique({
+    const usersAllReservationsAndEmail = await prisma.user.findUnique({
       where: {
         id: userId,
       },
       select: {
         reservations: true,
+        email: true,
+        name: true,
       },
     });
 
-    if (!usersAllReservations) {
+    const listingDetails = await prisma.listing.findUnique({
+      where: {
+        id: listingId,
+      },
+      select: {
+        title: true,
+      },
+    });
+
+    if (!usersAllReservationsAndEmail) {
       return NextResponse.json(
         { ok: false, message: "Invalid request!", data: null },
         { status: 400 }
@@ -37,7 +50,7 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    if (doesUserAlreadySubmittedRating) {
+    if (doesUserAlreadySubmittedRating?.length) {
       return NextResponse.json(
         {
           ok: false,
@@ -49,7 +62,7 @@ export async function POST(req: NextRequest) {
     }
 
     const currentPropertyReservations =
-      usersAllReservations?.reservations?.filter(
+      usersAllReservationsAndEmail?.reservations?.filter(
         (reservation: Reservation) => reservation.listingId === listingId
       );
 
@@ -86,7 +99,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const result = await prisma.rating.create({
+    const newReview = await prisma.rating.create({
       data: {
         rating,
         listingId,
@@ -95,8 +108,20 @@ export async function POST(req: NextRequest) {
       },
     });
 
+    //trigger a new mail to the owner of the property in-order to notify him/her
+    const htmlTemplateForOwner = sendMailForNewPropertyReview({
+      propertyName: listingDetails?.title,
+      date: humanReadableDateFormate(`${newReview?.createdAt}`),
+    });
+    await sendMail({
+      to: usersAllReservationsAndEmail?.email || "No email available",
+      name: usersAllReservationsAndEmail?.name || "No name available",
+      subject: "New Review on Property",
+      body: htmlTemplateForOwner,
+    });
+
     return NextResponse.json(
-      { ok: true, message: "Succesfully updated the rating!", data: result },
+      { ok: true, message: "Succesfully updated the rating!", data: newReview },
       { status: 201 }
     );
   } catch (err: any) {

@@ -3,6 +3,7 @@ import * as handlebars from "handlebars";
 import nodemailer from "nodemailer";
 import { NotifyMessageToCustomer } from "@/Templates/Reservation/NotifyMessageToCustomer";
 import { NotifyMessageToOwner } from "@/Templates/Reservation/NotifyMessageToOwner";
+import { NotifyMessageToOwnerOnNewReview } from "@/Templates/Review/NotifyMessageToOwnerOnNewReview";
 
 type sendMailProps = {
   to: string;
@@ -51,6 +52,14 @@ export const sendMailForSuccessfulReservation = (
   } else {
     htmlTemplate = handlebars?.compile(NotifyMessageToOwner);
   }
+  const updatedHtmlBody = htmlTemplate({
+    ...(props || {}),
+  });
+  return updatedHtmlBody;
+};
+
+export const sendMailForNewPropertyReview = (props: any) => {
+  const htmlTemplate = handlebars?.compile(NotifyMessageToOwnerOnNewReview);
   const updatedHtmlBody = htmlTemplate({
     ...(props || {}),
   });
