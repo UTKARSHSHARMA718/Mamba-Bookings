@@ -15,6 +15,7 @@
 ![login](https://github.com/UTKARSHSHARMA718/Mamba-Bookings/assets/86897568/2f79465b-dcad-41b7-a521-3432944d1d59)
 ![register](https://github.com/UTKARSHSHARMA718/Mamba-Bookings/assets/86897568/26390ce8-9fc0-46a3-8dd4-d276cce1d2b2)
 ![detailed view](https://github.com/UTKARSHSHARMA718/Mamba-Bookings/assets/86897568/0d482168-9f95-4de8-9d3f-14ad81915993)
+![Review modal 1](https://github.com/UTKARSHSHARMA718/Mamba-Bookings/assets/86897568/13eaabe4-17d4-430c-8e83-b40ffd28cdf9)
 ![review section](https://github.com/UTKARSHSHARMA718/Mamba-Bookings/assets/86897568/60b955c9-028b-4132-ac28-76cf05fa5216)
 ![page 2](https://github.com/UTKARSHSHARMA718/Mamba-Bookings/assets/86897568/eba8f5da-fdc6-4ac9-91f6-8820a8f2a9e1)
 
