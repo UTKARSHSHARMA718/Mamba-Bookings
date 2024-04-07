@@ -8,6 +8,7 @@ import { usePathname } from 'next/dist/client/components/navigation';
 import Button from '@/components/Button/Button';
 import Heading from '@/components/Headers/Heading';
 import HeartButton from '@/components/HeartButton/HeartButton';
+
 import useLocalStoarge from '@/hooks/useLocalStorage';
 import useQueryParams from '@/hooks/useQueryParams';
 import useRentModal from '@/hooks/useRentModal';

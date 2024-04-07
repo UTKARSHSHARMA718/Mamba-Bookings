@@ -15,6 +15,8 @@ const Input: React.FC<InputProps> = ({
     required,
     type = 'text',
     isPriceInput,
+    onChange,
+    value
 }) => {
 
     return (
@@ -44,8 +46,9 @@ const Input: React.FC<InputProps> = ({
                     min={type === 'password' ? 8 : 3}
                     max={type === 'password' ? 16 : 100000000}
                     //@ts-ignore
-                    {...register(id, { required })}
-                    {...{ id, type, disabled }}
+                    {...(register?.(id, { required }) || {})}
+                    {...{ id, type, disabled, value }}
+                    onChange={e => onChange?.(e?.target?.value as string)}
                     placeholder=" "
                     className={`
                     ${styles.inputField}

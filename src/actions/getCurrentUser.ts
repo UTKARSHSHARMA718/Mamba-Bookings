@@ -4,13 +4,20 @@ import { getServerSession } from "next-auth";
 
 import prisma from "@/libs/prismaDB";
 import { authOptions } from "../../pages/api/auth/[...nextauth]";
-import { SafeUser } from "@/types/DataBaseModes/DataBaseModes";
+import {
+  SafeUser,
+  UserWithReservation,
+} from "@/types/DataBaseModes/DataBaseModes";
 
 const getSession = async () => {
   return await getServerSession(authOptions);
 };
 
-export const getCurrentUser: () => Promise<SafeUser | null> = async () => {
+export const getCurrentUser: (
+  v?: any
+) => Promise<SafeUser | UserWithReservation | null> = async (
+  isReservationRequired?: boolean
+) => {
   try {
     const session = await getSession();
 
@@ -21,6 +28,9 @@ export const getCurrentUser: () => Promise<SafeUser | null> = async () => {
     const user = await prisma.user?.findUnique({
       where: {
         email: session.user.email,
+      },
+      include: {
+        reservations: !!isReservationRequired,
       },
     });
 

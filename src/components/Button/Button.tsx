@@ -35,8 +35,8 @@ const Button: React.FC<ButtonProps> = ({
             disabled:cursor-not-allowed
             justify-center
             relative
+            py-2
             ${small ? 'text-xs' : 'text-sm'}
-            ${small ? 'py-1' : 'py-2'}
             ${small ? 'font-medium' : 'font-semibold'}
             ${outline ? 'bg-white' : 'bg-primary-green-2'}
             ${outline ? 'border-[1px]' : 'border-0'}

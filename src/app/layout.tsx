@@ -6,6 +6,7 @@ import Navbar from "@/components/Navbar/Navbar";
 import Providers from "@/Theme/Providers";
 import RemoveFilter from "@/components/RemoveFilter/RemoveFilter";
 import ToastProvider from "@/providers/ToastProvider";
+
 import { getCurrentUser } from "@/actions/getCurrentUser";
 import { COMPANY_NAME } from "@/constants/const";
 import "./globals.css";

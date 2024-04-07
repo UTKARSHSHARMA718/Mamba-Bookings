@@ -9,14 +9,15 @@ import GridView from '@/components/GridView/GridView';
 import ProductCard from '@/components/ProductCard/ProductCard';
 import ProductCardShimmer from '@/ShimmerUI/ProductCard/ProductCardShimmer';
 import useDeleteListingApi from '@/hooks/useDeleteListingApi';
-import { Listing } from '@prisma/client';
-import { SafeUser } from '@/types/DataBaseModes/DataBaseModes';
+import { CompleteListingDataType, SafeUser } from '@/types/DataBaseModes/DataBaseModes';
 import { getAllListing } from '@/actions/getAllListings';
 import { GENERAL_ERROR_MESSAGE } from '@/constants/errorMessage';
 import { PAGE_SIZE } from '@/constants/const';
 
+type UpdatedListingType = Omit<CompleteListingDataType, "ratings"> & { isGuestFav: boolean } & { ratings: number }
+
 type MainProductListingProps = {
-    allListings: Listing[] | null;
+    allListings: UpdatedListingType[] | null;
     user: SafeUser | null;
     isDeleteOptionAvailable?: boolean;
     totalListings?: number;
@@ -49,7 +50,7 @@ const MainProductListing: React.FC<MainProductListingProps> = ({
         endDate: searchParams?.get("endDate") || "",
     }
 
-    const loaderMoreDataHandler = async (listingData: Listing[] | null, currentPageNumber: number) => {
+    const loaderMoreDataHandler = async (listingData: UpdatedListingType[] | null, currentPageNumber: number) => {
         setIsDataLoading(true);
         try {
             const newPageNumber = currentPageNumber + 1;
@@ -97,6 +98,8 @@ const MainProductListing: React.FC<MainProductListingProps> = ({
                                 category={product?.category}
                                 actionLabel={isDeleteOptionAvailable ? 'Delete Listing' : ""}
                                 onAction={isDeleteOptionAvailable ? deleteListingHandler : () => { }}
+                                isGuestFav={product?.isGuestFav}
+                                rating={product?.ratings}
                             />
                         })
                     }

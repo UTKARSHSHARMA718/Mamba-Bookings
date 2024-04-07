@@ -1,0 +1,4 @@
+.halfStar {
+  clip-path: inset(0 50% 0 0); /* Clip the left half of the image */
+  margin-right: -8px;
+}

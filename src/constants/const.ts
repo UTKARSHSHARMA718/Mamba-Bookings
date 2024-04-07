@@ -152,3 +152,6 @@ export const LIGHT = "light";
 export const DARK = "dark";
 export const PAGE_SIZE = 10;
 export const SMALL_SCREEN_SEARCH_BAR_HEADING = "Find your place";
+
+export const NUMBER_OF_BOOKINGS_TO_CONSIDER_FAV = 2;
+export const NUMBER_GUEST_DID_FAV_BOOKINGS = 1;
