@@ -9,6 +9,7 @@ import ReviewAndRatingCard from '@/components/ReviewAndRatingCard/ReviewAndRatin
 import useReviewModal from '@/hooks/useReviewModal';
 import { humanReadableDateFormate } from '@/libs/utils/util';
 import { CompleteListingDataType, CompleteRatingData, SafeUser } from '@/types/DataBaseModes/DataBaseModes'
+import styles from "./ListingReviews.module.css"
 
 type ListingReviewsProps = {
     currentUser: SafeUser | null,
@@ -40,7 +41,7 @@ const ListingReviews: React.FC<ListingReviewsProps> = ({ currentUser, listingDat
             />}
             {
                 listingData?.canProvideReview &&
-                <div className='w-32'>
+                <div className={styles.buttonContainer}>
                     <Button
                         label={currentUserRating ? 'Update Review' : "Submit Review"}
                         small
