@@ -1,4 +1,4 @@
-# A Fullstack Mamba Bookings built in NextJs
+# A Fullstack application "Mamba Bookings" built-in NextJs
 
 ![page 1](https://github.com/UTKARSHSHARMA718/Mamba-Bookings/assets/86897568/70fd4215-95dc-4d75-82c1-8c40b610e7a7)
 ![card 1](https://github.com/UTKARSHSHARMA718/Mamba-Bookings/assets/86897568/ef4cb86a-af52-42c1-814c-1afbe1c7d6cb)
@@ -52,7 +52,7 @@ This is a repository for a FullStack Netflix Clone built using React, NextJS, Ta
 ### Cloning the repository
 
 ```shell
-https://github.com/UTKARSHSHARMA718/Netflix-clone.git
+https://github.com/UTKARSHSHARMA718/Mamba-Bookings.git
 ```
 
 ### Install packages
