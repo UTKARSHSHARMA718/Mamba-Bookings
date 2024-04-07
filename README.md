@@ -1,36 +1,79 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# A Fullstack Netflix Clone built in NextJs
 
-## Getting Started
+![home page 1](https://github.com/UTKARSHSHARMA718/Netflix-clone/assets/86897568/1a786214-03ff-4a62-a157-d656b6fc22a7)
 
-First, run the development server:
+![home page 2](https://github.com/UTKARSHSHARMA718/Netflix-clone/assets/86897568/34065aee-44a8-454f-87a3-64d93a85f487)
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+![home page 3](https://github.com/UTKARSHSHARMA718/Netflix-clone/assets/86897568/81022bb2-2d18-477b-a0a9-377c3ff9883f)
+
+![video page 1](https://github.com/UTKARSHSHARMA718/Netflix-clone/assets/86897568/505404e7-dd54-4ec2-84c3-f6d6731074fc)
+
+![detailed page 1](https://github.com/UTKARSHSHARMA718/Netflix-clone/assets/86897568/84a3fd08-fc18-40e2-bde9-7ed08daf4ea3)
+
+![Filters 1](https://github.com/UTKARSHSHARMA718/Netflix-clone/assets/86897568/5dc7ecdc-75aa-4d21-8fd9-c63995be4dfa)
+
+![comment section 1](https://github.com/UTKARSHSHARMA718/Netflix-clone/assets/86897568/ddc18871-5549-4e01-b6a3-fd2b664792e4)
+
+![Signup](https://github.com/UTKARSHSHARMA718/Netflix-clone/assets/86897568/c670dc35-5363-4892-97dc-27ccd13d33ca)
+
+
+This is a repository for a FullStack Netflix Clone built using React, NextJS, TailwindCSS & Prisma.
+
+[VIDEO TUTORIAL](https://drive.google.com/file/d/1eYwcQ2pJrqPonzXOPVarY3goiHLpXcpw/view?usp=sharing)
+
+### Stack/Technologies:
+
+- React JS, Typescript, Next JS, MongoDB, NextAuth, Prisma
+
+### Features:
+
+- Email and Password authentication with NextAuth
+- Full responsiveness on all pages
+- Cookie based authentication
+- API and Controllers creation
+- Detail-oriented effects and animations using Tailwind
+- Nextjs server actions for data fetching
+- Context API for global state management
+- Detailed Movie page
+- Dedicated comment section
+- Search By Filter Page
+- Mark movie/series as favourite option
+
+### Prerequisites
+
+**Node version 16.x**
+
+### Cloning the repository
+
+```shell
+https://github.com/UTKARSHSHARMA718/Netflix-clone.git
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Install packages
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```shell
+npm i --force
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+### Setup .env file
 
-## Learn More
 
-To learn more about Next.js, take a look at the following resources:
+```js
+DATABASE_URL=
+NEXTAUTH_JWT_SECRET=
+NEXTAUTH_SECRET=
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Start the app
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+```shell
+npm run dev
+```
 
-## Deploy on Vercel
+## Available commands
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Running commands with npm `npm run [command]`
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+| command         | description                              |
+| :-------------- | :--------------------------------------- |
+| `dev`           | Starts a development instance of the app |
