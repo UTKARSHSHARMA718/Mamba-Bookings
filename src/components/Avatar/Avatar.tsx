@@ -1,18 +1,20 @@
 import React from 'react'
 import Image from 'next/image';
 
+import PlaceHolder from "@/../public/images/placeholder.jpg"
+
 type AvatarTypes = {
     image?: string;
+    size?: number;
 }
 
 const Avatar: React.FC<AvatarTypes> = ({
-    image
+    image,
+    size = 20,
 }) => {
-    // TODO: update it with image from database
-    const placeHolderImage = '/images/placeholder.jpg';
 
     return (
-        <Image src={image || placeHolderImage} alt={'placeholder image'} width={20} height={20} className='rounded-full cursor-pointer' />
+        <Image src={image || PlaceHolder?.src} alt="user-profile-image" width={size} height={size} className='rounded-full cursor-pointer' />
     )
 }
 

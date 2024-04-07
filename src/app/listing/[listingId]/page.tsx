@@ -1,11 +1,13 @@
 
 import React from 'react';
 
+import EmptyPage from '@/components/EmptyPage/EmptyPage';
 import ListingHeadingAndImage from '@/containers/ListingHeadingAndImage/ListingHeadingAndImage';
 import ListingInfo from '@/containers/ListingInfo/ListingInfo';
+import ListingReviews from '@/containers/ListingReviews/ListingReviews';
+
 import { getCurrentUser } from '@/actions/getCurrentUser';
 import { getListing } from '@/actions/getListing';
-import EmptyPage from '@/components/EmptyPage/EmptyPage';
 
 type ListingPageProps = {
     params: {
@@ -17,8 +19,6 @@ const ListingPage: React.FC<ListingPageProps> = async ({ params }) => {
     const { listingId } = params;
     const user = await getCurrentUser();
     const listingDetails = await getListing({ listingId });
-
-    console.log({ listingDetails, listingId });
 
     if (!listingDetails) {
         return <EmptyPage
@@ -34,8 +34,15 @@ const ListingPage: React.FC<ListingPageProps> = async ({ params }) => {
                 currentUser={user}
                 listingData={listingDetails}
             />
-            <ListingInfo reservations={listingDetails?.reservations} currentUser={user}
-                listingData={listingDetails} />
+            <ListingInfo
+                reservations={listingDetails?.reservations}
+                currentUser={user}
+                listingData={listingDetails}
+            />
+            <ListingReviews 
+                currentUser={user}
+                listingData={listingDetails}
+            />
         </div>
     )
 }

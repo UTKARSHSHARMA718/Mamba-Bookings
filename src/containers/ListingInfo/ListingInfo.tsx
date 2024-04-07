@@ -3,33 +3,36 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import toast from 'react-hot-toast';
 import dynamic from 'next/dynamic';
-import { useRouter } from 'next/navigation';
 import axios from 'axios';
+import { FaBath } from "react-icons/fa";
+import { SlPeople } from "react-icons/sl";
+import { MdOutlineBedroomParent } from "react-icons/md";
+import { useRouter } from 'next/navigation';
 import { differenceInCalendarDays, eachDayOfInterval } from 'date-fns';
 
 // TODO: remove shimmer UI for ListingInfo component
 import Avatar from '@/components/Avatar/Avatar';
 import ListingReservations from '../ListingReservations/ListingReservations';
+import ShowCountProperties from '@/components/ShowCountProperties/ShowCountProperties';
 import useCountryInfo from '@/hooks/useCountryInfo';
 import useLoginModal from '@/hooks/useLoginModal';
-import { Listing, Reservation } from '@prisma/client'
+
+import { Reservation } from '@prisma/client'
 import { compareString } from '@/libs/utils/util';
 import { Resposnse } from '@/types/ApiResponse/ApiResponseTypes';
 import { NEW_RESERVATIONS_CREATED_MESSAGE } from '@/constants/generalMessage';
-import { SafeUser } from '@/types/DataBaseModes/DataBaseModes';
+import { CompleteListingDataType, SafeUser } from '@/types/DataBaseModes/DataBaseModes';
 import { GENERAL_ERROR_MESSAGE } from '@/constants/errorMessage';
 import { categoriesToRender, initialDateRange } from '@/constants/const';
 import { API, RESERVATIONS } from '@/constants/apiEndpoints';
 import commonStyles from "@/common/styles/commonStyls.module.css";
 
-const Map = dynamic(() => import('@/components/Map/Map'), {
-    ssr: false
-});
+
 
 type ListingInfoTypes = {
     reservations?: Reservation[];
     currentUser: SafeUser | null;
-    listingData: Listing | null;
+    listingData: CompleteListingDataType & { canProvideReview: boolean } | null;
 }
 
 const ListingInfo: React.FC<ListingInfoTypes> = ({ reservations, currentUser, listingData }) => {
@@ -38,6 +41,9 @@ const ListingInfo: React.FC<ListingInfoTypes> = ({ reservations, currentUser, li
     const { getCountryByValue } = useCountryInfo();
     const loginModal = useLoginModal();
 
+    const Map = useMemo(() => dynamic(() => import('@/components/Map/Map'), {
+        ssr: false
+    }), [])
     const disabledDates = useMemo(() => {
         let dateRange: Date[] = [];
         reservations?.forEach(v => {
@@ -77,7 +83,7 @@ const ListingInfo: React.FC<ListingInfoTypes> = ({ reservations, currentUser, li
             }
             toast?.error(GENERAL_ERROR_MESSAGE);
         } catch (err: any) {
-            toast?.error(err?.message || err);
+            toast?.error(err?.response?.data?.message || err);
             console.log("Error while creating new reservation: " + err);
         } finally {
             setIsLoadingReservation(false);
@@ -104,10 +110,7 @@ const ListingInfo: React.FC<ListingInfoTypes> = ({ reservations, currentUser, li
     }, [dateRange?.endDate, dateRange?.startDate, listingData?.price])
 
     const Icon = category?.icon;
-
-    const ShowCountProperties = ({ propertyNames, countValue }: { propertyNames: string, countValue: number }) => {
-        return <p className='text-xs text-slate-300 font-medium'>{countValue} {propertyNames}</p>
-    }
+    const isShowReservationOption = currentUser?.id !== listingData?.userId;
 
     return (
         <div className={`${commonStyles.container} p-6 flex-col md:flex-row flex gap-6 w-full m-auto`}>
@@ -123,14 +126,17 @@ const ListingInfo: React.FC<ListingInfoTypes> = ({ reservations, currentUser, li
                     </div>
                     <div className={`
                     flex
-                    gap-1
+                    flex-col
+                    items-start
+                    md:flex-row
+                    md:items-center
+                    gap-4
                     justify-between
-                    items-center
                     `}
                     >
-                        <ShowCountProperties propertyNames='guests' countValue={listingData?.guestCount!} />
-                        <ShowCountProperties propertyNames='bathrooms' countValue={listingData?.bathroomCount!} />
-                        <ShowCountProperties propertyNames='rooms' countValue={listingData?.roomCount!} />
+                        <ShowCountProperties propertyNames='guests' countValue={listingData?.guestCount!} icon={SlPeople} />
+                        <ShowCountProperties propertyNames='bathrooms' countValue={listingData?.bathroomCount!} icon={FaBath} />
+                        <ShowCountProperties propertyNames='rooms' countValue={listingData?.roomCount!} icon={MdOutlineBedroomParent} />
                     </div>
                 </div>
                 <hr />
@@ -140,7 +146,7 @@ const ListingInfo: React.FC<ListingInfoTypes> = ({ reservations, currentUser, li
                     </div>
                     <div className='flex flex-col gap-2 items-start justify-center'>
                         <p className='text-black font-semibold text-sm dark:text-white'>{category?.label}</p>
-                        <p className='text-slate-300 fond-semibold text-xs'>{category?.description}</p>
+                        <p className='dark:text-slate-300 fond-semibold text-xs'>{category?.description}</p>
                     </div>
                 </div>
                 <hr />
@@ -152,7 +158,7 @@ const ListingInfo: React.FC<ListingInfoTypes> = ({ reservations, currentUser, li
             </div>
             <div className='w-1/2'>
                 {/* TODO: change the component name to something more meaningful */}
-                <ListingReservations
+                {isShowReservationOption && <ListingReservations
                     price={listingData?.price || 0}
                     totalPrice={totalPrice || 0}
                     dateRange={dateRange}
@@ -160,7 +166,7 @@ const ListingInfo: React.FC<ListingInfoTypes> = ({ reservations, currentUser, li
                     disabled={isLoadingReservation}
                     onDateChange={(value) => setDateRange(value)}
                     disabledDate={disabledDates}
-                />
+                />}
             </div>
         </div>
     )

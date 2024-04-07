@@ -3,23 +3,14 @@ import { useInView } from 'react-intersection-observer';
 
 type GridViewProps = {
     children: React.ReactElement | null;
-    callBack?: () => void;
 }
 
 const GridView: React.FC<GridViewProps> = (props) => {
-    const { children, callBack } = props;
-
-    const { ref, inView } = useInView();
-
-    useEffect(() => {
-        if (inView) {
-            callBack?.();
-        }
-    }, [inView])
+    const { children } = props;
 
     return (
         // @ts-ignore
-        <div ref={ref} className="
+        <div className="
         p-6
         grid
         grid-cols-1

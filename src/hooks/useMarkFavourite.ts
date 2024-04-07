@@ -49,7 +49,7 @@ const useMarkFavourite = ({ listingId, currentUser }: MarkFavoriteTypes) => {
       toast?.error("Something went wrong!");
     } catch (err: any) {
       setIsLoading(false);
-      toast?.error(err?.message || err);
+      toast?.error(err?.response?.data?.message || err);
       console.log(err);
     }
   };

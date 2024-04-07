@@ -12,23 +12,15 @@ import Button from '@/components/Button/Button'
 import Heading from '@/components/Headers/Heading'
 import Input from '@/components/Input/Input'
 import Modal from '@/components/Modal/Modal'
-import useLoginModal from '@/hooks/useLoginModal'
-import { COMPANY_NAME, CREDENTIALS } from '@/constants/const'
-import { LOGGED_IN_FAILED_MESSAGE, LOGGED_IN_MESSAGE } from '@/constants/generalMessage'
-import useRegisterModal from '@/hooks/useRegisterModal'
-import PasswordStrengthPoints from '@/components/PasswordStrengthPoints/PasswordStrengthPoints'
-import { PASSWORD_REGEX } from '@/constants/regex'
-import { isPasswordValid } from '@/libs/utils/util'
 import PasswordInput from '@/components/PasswordInput/PasswordInput'
 
-// TODO: add password eye icon
+import useLoginModal from '@/hooks/useLoginModal'
+import useRegisterModal from '@/hooks/useRegisterModal'
+import { COMPANY_NAME, CREDENTIALS } from '@/constants/const'
+import { LOGGED_IN_FAILED_MESSAGE, LOGGED_IN_MESSAGE } from '@/constants/generalMessage'
+
 const LoginModal = () => {
-
-    const loginModal = useLoginModal();
-    const registerModal = useRegisterModal();
-    const [isLoading, setIsLoading] = useState(false);
     const router = useRouter();
-
     const {
         watch,
         register,
@@ -43,8 +35,12 @@ const LoginModal = () => {
         }
     });
 
-    const password = watch('password');
+    const [isLoading, setIsLoading] = useState(false);
 
+    const loginModal = useLoginModal();
+    const registerModal = useRegisterModal();
+
+    const password = watch('password');
     const onSubmit: SubmitHandler<FieldValues> = async (payload) => {
         setIsLoading(true);
         try {
@@ -80,7 +76,6 @@ const LoginModal = () => {
                 {...{ register, errors }}
             />
             <PasswordInput isRequired id='password' {...{ register, errors, isLoading }} />
-            <PasswordStrengthPoints input={password} />
         </div>
     )
 
@@ -110,11 +105,9 @@ const LoginModal = () => {
         </div>
     )
 
-
-
     return (
         <Modal
-            disabled={isLoading || isPasswordValid(password)}
+            disabled={isLoading || !password?.length}
             isOpen={loginModal.isOpen}
             onClose={loginModal.onClose}
             actionLabel='Login'

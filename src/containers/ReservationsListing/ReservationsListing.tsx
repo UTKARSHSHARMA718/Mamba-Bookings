@@ -37,7 +37,7 @@ const ReservationsListing: React.FC<ReservationsListingProps> = ({
             }
             toast?.success(GENERAL_ERROR_MESSAGE);
         } catch (err: any) {
-            toast?.error(err?.message);
+            toast?.error(err?.response?.data?.message);
         }
     }, [toast])
 

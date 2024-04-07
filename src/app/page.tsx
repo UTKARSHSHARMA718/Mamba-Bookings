@@ -1,6 +1,7 @@
 import Categories from "@/containers/Categories/Categories";
 import EmptyPage from "@/components/EmptyPage/EmptyPage";
 import MainProductListing from "@/containers/MainProductListing/MainProductListing";
+
 import { getAllListing } from "@/actions/getAllListings";
 import { getCurrentUser } from "@/actions/getCurrentUser";
 import { PAGE_SIZE } from "@/constants/const";

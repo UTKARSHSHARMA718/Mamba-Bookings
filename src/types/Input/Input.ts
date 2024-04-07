@@ -9,4 +9,6 @@ export type InputProps = {
   register?: UseFormRegister<FieldValues>;
   required?: boolean;
   isPriceInput?: boolean;
+  onChange?: (v:any)=>void;
+  value?: string;
 };

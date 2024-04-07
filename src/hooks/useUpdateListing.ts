@@ -23,7 +23,7 @@ const useUpdateListing = () => {
       }
       setError(res?.data?.message);
     } catch (err: any) {
-      setError(err?.message);
+      setError(err?.response?.data?.message);
     } finally {
       setIsLoading(false);
     }

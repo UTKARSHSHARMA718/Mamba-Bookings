@@ -1,4 +1,8 @@
 import { PASSWORD_REGEX } from "@/constants/regex";
+import {
+  SafeUser,
+  UserWithReservation,
+} from "@/types/DataBaseModes/DataBaseModes";
 
 export const getSelectedCategory = (strValues: string) => {
   if (!strValues) {
@@ -45,4 +49,20 @@ export const isPasswordValid = (input: string) => {
     input?.length >= 8 &&
     input?.length <= 16
   );
+};
+
+export const canUserProvideReview = (
+  user: UserWithReservation,
+  listingId: string
+) => {
+  const allUserreservations = user?.reservations;
+  const currentListingReservations = allUserreservations?.filter(
+    (reservation) => {
+      return reservation?.listingId === listingId;
+    }
+  );
+  const canProvideReview = currentListingReservations?.find(
+    (reservation) => reservation?.endDate < new Date()
+  );
+  return !!canProvideReview;
 };
