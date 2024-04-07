@@ -25,21 +25,25 @@ This is a repository for a FullStack Netflix Clone built using React, NextJS, Ta
 
 ### Stack/Technologies:
 
-- React JS, Typescript, Next JS, MongoDB, NextAuth, Prisma
+- React JS, Typescript, Next JS, MongoDB, NextAuth, Prisma, Redis, Nodemailer, Zustand
 
 ### Features:
 
 - Email and Password authentication with NextAuth
+- Option for login with Google and GitHub
 - Full responsiveness on all pages
-- Cookie based authentication
+- Cookie-based authentication
 - API and Controllers creation
+- Caching layer for fast read operations
 - Detail-oriented effects and animations using Tailwind
 - Nextjs server actions for data fetching
-- Context API for global state management
-- Detailed Movie page
-- Dedicated comment section
-- Search By Filter Page
-- Mark movie/series as favourite option
+- Zustand for global state management
+- Detailed rental property page
+- Dedicated review section
+- Advance search option
+- Option for making the property as favorite
+- Feature of sending emails on every new review, reservation and creating of new account
+- Guest Favorite property listing
 
 ### Prerequisites
 
@@ -62,8 +66,17 @@ npm i --force
 
 ```js
 DATABASE_URL=
-NEXTAUTH_JWT_SECRET=
 NEXTAUTH_SECRET=
+GITHUB_ID=
+GITHUB_SECRET=
+GOOGLE_ID=
+GOOGLE_SECRET=
+NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME=
+ENCRYPTION_KEY=
+UPSTASH_REDIS_REST_URL=
+UPSTASH_REDIS_REST_TOKEN=
+SMTP_EMAIL=
+SMTP_PASSWORD=
 ```
 
 ### Start the app
