@@ -30,7 +30,7 @@
 - Full responsiveness on all pages
 - Cookie-based authentication
 - API and Controllers creation
-- Caching layer for fast read operations
+- Caching layer for fast-read operations
 - Detail-oriented effects and animations using Tailwind
 - Nextjs server actions for data fetching
 - Zustand for global state management
@@ -58,7 +58,6 @@ npm i --force
 ```
 
 ### Setup .env file
-
 
 ```js
 DATABASE_URL=
