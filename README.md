@@ -19,11 +19,6 @@
 ![review section](https://github.com/UTKARSHSHARMA718/Mamba-Bookings/assets/86897568/60b955c9-028b-4132-ac28-76cf05fa5216)
 ![page 2](https://github.com/UTKARSHSHARMA718/Mamba-Bookings/assets/86897568/eba8f5da-fdc6-4ac9-91f6-8820a8f2a9e1)
 
-
-This is a repository for a FullStack Netflix Clone built using React, NextJS, TailwindCSS & Prisma.
-
-[VIDEO TUTORIAL](https://drive.google.com/file/d/1eYwcQ2pJrqPonzXOPVarY3goiHLpXcpw/view?usp=sharing)
-
 ### Stack/Technologies:
 
 - React JS, Typescript, Next JS, MongoDB, NextAuth, Prisma, Redis, Nodemailer, Zustand
