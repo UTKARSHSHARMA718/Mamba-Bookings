@@ -25,6 +25,7 @@ const RegisterModal = () => {
     const registerModal = useRegisterModal();
     const loginModal = useLoginModal();
     const [isLoading, setIsLoading] = useState(false);
+    const [password, setPassword] = useState("");
 
     const { register, handleSubmit, watch, formState: {
         errors,
@@ -32,11 +33,8 @@ const RegisterModal = () => {
         defaultValues: {
             name: "",
             email: "",
-            password: "",
         }
     });
-
-    const password = watch('password');
 
     const onSubmit: SubmitHandler<FieldValues> = async (payload) => {
         setIsLoading(true);
@@ -51,7 +49,7 @@ const RegisterModal = () => {
             }
             toast?.error(res?.data?.message);
         } catch (err: any) {
-            console.error({err});
+            console.error({ err });
             console.log("Error while registering user: " + err)
             toast?.error(err?.response?.data?.message || err);
         } finally {
@@ -77,7 +75,12 @@ const RegisterModal = () => {
                 type='email'
                 {...{ register, errors }}
             />
-            <PasswordInput isRequired id='password' {...{ register, errors, isLoading }} />
+            <PasswordInput
+                isRequired
+                id='password'
+                {...{ register, errors, isLoading }}
+                onChange={(v: string) => setPassword(v)}
+            />
             <PasswordStrengthPoints input={password} />
         </div>
     )

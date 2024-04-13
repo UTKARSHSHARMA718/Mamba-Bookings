@@ -3,6 +3,8 @@ import bcrypt from "bcrypt";
 
 import prisma from "@/libs/prismaDB";
 import { ROUNDES_FOR_HASHING_PASSWORD } from "@/constants/const";
+import { humanReadableDateFormate } from "@/libs/utils/util";
+import { sendMail, sendMailForNewUserCreation } from "@/libs/mail/sendMail";
 
 export async function POST(req: NextRequest) {
   try {
@@ -64,6 +66,19 @@ export async function POST(req: NextRequest) {
         { status: 500 }
       );
     }
+
+    //trigger a new mail to the owner of the account in-order to notify him/her
+    const htmlTemplateForNewCustomer = sendMailForNewUserCreation({
+      accountName: user?.name,
+      accountEmail: user?.email,
+      date: humanReadableDateFormate(`${user?.createdAt}`),
+    });
+    await sendMail({
+      to: user?.email || "No email available",
+      name: user?.name || "No name available",
+      subject: "New Account created successfully",
+      body: htmlTemplateForNewCustomer,
+    });
 
     return NextResponse?.json(
       {

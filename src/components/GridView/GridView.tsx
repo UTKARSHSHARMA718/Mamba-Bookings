@@ -11,6 +11,7 @@ const GridView: React.FC<GridViewProps> = (props) => {
     return (
         // @ts-ignore
         <div className="
+        mb-2
         p-6
         grid
         grid-cols-1
@@ -19,7 +20,8 @@ const GridView: React.FC<GridViewProps> = (props) => {
         lg:grid-cols-4
         xl:grid-cols-5
         2xl:grid-cols-6
-        gap-4
+        gap-6
+        sm:gap-4
         ">
             {children}
         </div>

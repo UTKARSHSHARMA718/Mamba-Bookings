@@ -12,13 +12,9 @@ const Properties = async () => {
     });
     const listings = listingRes?.data;
 
-    if (!user) {
-        return <EmptyPage
-            title='Not Authorized!'
-            description='Please login to see your properties.'
-        />
-    }
-
+    // if (!user) {
+    //     redirect(HOME)
+    // }
     if (!listings || !listings?.length) {
         return <EmptyPage
             title='No listing to show!'

@@ -22,7 +22,6 @@ import { LOGGED_IN_FAILED_MESSAGE, LOGGED_IN_MESSAGE } from '@/constants/general
 const LoginModal = () => {
     const router = useRouter();
     const {
-        watch,
         register,
         handleSubmit,
         formState: {
@@ -36,11 +35,11 @@ const LoginModal = () => {
     });
 
     const [isLoading, setIsLoading] = useState(false);
+    const [isPasswordEntered, setIsPasswordEntered] = useState(false);
 
     const loginModal = useLoginModal();
     const registerModal = useRegisterModal();
 
-    const password = watch('password');
     const onSubmit: SubmitHandler<FieldValues> = async (payload) => {
         setIsLoading(true);
         try {
@@ -75,7 +74,12 @@ const LoginModal = () => {
                 type='email'
                 {...{ register, errors }}
             />
-            <PasswordInput isRequired id='password' {...{ register, errors, isLoading }} />
+            <PasswordInput
+                isRequired
+                id='password'
+                {...{ register, errors, isLoading }}
+                onChange={(v:string) => setIsPasswordEntered(!!v)}
+            />
         </div>
     )
 
@@ -107,7 +111,7 @@ const LoginModal = () => {
 
     return (
         <Modal
-            disabled={isLoading || !password?.length}
+            disabled={isLoading || !isPasswordEntered}
             isOpen={loginModal.isOpen}
             onClose={loginModal.onClose}
             actionLabel='Login'

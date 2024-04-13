@@ -88,7 +88,8 @@ const ProductCard: React.FC<ProductCardProps> = React.forwardRef(({
             rounded-xl 
             flex-col
             gap-2;
-            max-h-[40vh]
+            max-h-[50vh]
+            sm:max-h-[40vh]
             cursor-pointer
             flex
             justify-center
@@ -104,7 +105,8 @@ const ProductCard: React.FC<ProductCardProps> = React.forwardRef(({
             </div>
             <div className={`
                 w-full
-                h-3/4
+                h-full
+                sm:h-3/4
                 overflow-hidden
                 rounded-xl
                 cursor-pointer
@@ -120,7 +122,7 @@ const ProductCard: React.FC<ProductCardProps> = React.forwardRef(({
                     <p className='font-medium text-xs'>Guest favourite</p>
                 </div>}
             </div>
-            <div className='flex flex-col gap-1  w-full items-start p-4 px-0 h-1/4'>
+            <div className='flex flex-col gap-1  w-full items-start p-4 px-0 h-full sm:h-1/4'>
                 <div className='flex flex-col gap-2 justify-start items-start'>
                     <p className='text-slate-700 text-sm font-semibold dark:text-white'>
                         {location[0]?.label}, {location[0]?.region}

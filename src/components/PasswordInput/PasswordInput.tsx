@@ -14,6 +14,7 @@ type PasswordInputProps = {
     register?: UseFormRegister<FieldValues>;
     errors?: FieldErrors<FieldValues>,
     isRequired?: boolean,
+    onChange?: (v:string) => void;
 }
 
 const PasswordInput: React.FC<PasswordInputProps> = ({
@@ -23,8 +24,9 @@ const PasswordInput: React.FC<PasswordInputProps> = ({
     register,
     errors,
     isRequired,
+    onChange,
 }) => {
-    const eyeIconStyles = 'absolute right-2 top-5 z-20 cursor-pointer';
+    const eyeIconStyles = 'absolute right-2 top-[16px] z-20 cursor-pointer bg-white';
     const [isShowPassword, setIsShowPassword] = useState(false);
 
     const handleToggle = () => setIsShowPassword(prev => !prev);
@@ -40,7 +42,7 @@ const PasswordInput: React.FC<PasswordInputProps> = ({
             <Input
                 disabled={isLoading}
                 type={isShowPassword ? 'text' : 'password'}
-                {...{ register, errors, label, id }}
+                {...{ register, errors, label, id, onChange }}
                 required={isRequired}
             />
         </div>

@@ -9,15 +9,10 @@ import GridView from '@/components/GridView/GridView'
 import ProductCard from '@/components/ProductCard/ProductCard'
 import { API, RESERVATIONS } from '@/constants/apiEndpoints'
 import { GENERAL_ERROR_MESSAGE } from '@/constants/errorMessage'
-import { SafeUser } from '@/types/DataBaseModes/DataBaseModes'
-import { CompleteReservationDataType } from '../../types/DataBaseModes/DataBaseModes';
-
-
-
-
+// TODO: change any type later
 type ReservationsListingProps = {
-    allReservationsOfUser: CompleteReservationDataType[],
-    user: SafeUser,
+    allReservationsOfUser: any,
+    user: any;
 }
 
 const ReservationsListing: React.FC<ReservationsListingProps> = ({
@@ -25,7 +20,6 @@ const ReservationsListing: React.FC<ReservationsListingProps> = ({
     user,
 }) => {
     const router = useRouter();
-
     const cancelReservationHandler = useCallback(async ({ reservationId }: { reservationId: string }) => {
         try {
             const url = API + RESERVATIONS + `/${reservationId}`;
@@ -39,7 +33,7 @@ const ReservationsListing: React.FC<ReservationsListingProps> = ({
         } catch (err: any) {
             toast?.error(err?.response?.data?.message);
         }
-    }, [toast])
+    }, [toast]);
 
     return (
         <GridView>

@@ -6,6 +6,8 @@ import MainProductListing from '@/containers/MainProductListing/MainProductListi
 import { getCurrentUser } from '@/actions/getCurrentUser';
 import { getFavouriteListing } from '@/actions/getFavouriteListings'
 import { PAGE_SIZE } from '@/constants/const';
+import { redirect } from 'next/navigation';
+import { HOME } from '@/constants/routeNames';
 
 const Favoutrite = async () => {
 
@@ -15,13 +17,9 @@ const Favoutrite = async () => {
     });
     const user = await getCurrentUser();
 
-    if (!user) {
-        return <EmptyPage
-            title='Not Authorized!'
-            description='Please login to see your favourite marked items.'
-        />
-    }
-
+    // if (!user) {
+    //     redirect(HOME)
+    // }
     if (!allfavoriteListings || !allfavoriteListings?.length) {
         return <EmptyPage
             title='No favorite listing found!'

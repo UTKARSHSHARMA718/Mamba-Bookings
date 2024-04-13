@@ -10,7 +10,7 @@ import useLoginModal from '@/hooks/useLoginModal';
 import useRegisterModal from '@/hooks/useRegisterModal';
 import useUserDropdown from '@/hooks/useUserDropdown';
 import { COMPANY_NAME, DARK } from '@/constants/const';
-import { FAVORITES, PROPERTIES, RESERVATIONS, TRIPS } from '@/constants/routeNames';
+import { FAVORITES, HOME, PROPERTIES, RESERVATIONS, TRIPS } from '@/constants/routeNames';
 
 type UserMenuDropDownTypes = {
     isUserLoggedIn: boolean;
@@ -43,6 +43,10 @@ const UserMenuDropDown: React.FC<UserMenuDropDownTypes> = React.forwardRef(({ is
         ]
     const menuItemForLoggedInUser: { text: string; onClick: () => void }[] =
         [
+            {
+                text: 'Home',
+                onClick: () => router?.push(HOME),
+            },
             {
                 text: 'My trips',
                 onClick: () => router?.push(TRIPS),
@@ -82,7 +86,8 @@ const UserMenuDropDown: React.FC<UserMenuDropDownTypes> = React.forwardRef(({ is
             dark:bg-white
             rounded-xl 
             flex 
-            flex-col 
+            flex-col
+            items-start 
             gap-2 
             shadow-md 
             w-[10vw] 
@@ -110,10 +115,10 @@ const UserMenuDropDown: React.FC<UserMenuDropDownTypes> = React.forwardRef(({ is
                     return <React.Fragment key={index}>
                         <div style={{ width: "100%", minHeight: "1px", backgroundColor: "grey" }}>
                         </div>
-                        <MenuItem label={item?.text} onClick={item?.onClick} customStyles='border-[1px] border-slate-400' />
+                        <MenuItem label={item?.text} onClick={item?.onClick} customStyles='border-[1px] border-slate-400 text-center w-full' />
                     </React.Fragment>
                 }
-                return <MenuItem label={item?.text} onClick={item?.onClick} key={index} />
+                return <MenuItem label={item?.text} onClick={item?.onClick} key={index} customStyles='w-full text-start'/>
             })}
         </div>
     )

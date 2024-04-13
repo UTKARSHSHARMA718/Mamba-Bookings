@@ -1,20 +1,19 @@
 'use client'
 
 import React, { useCallback } from 'react'
+import toast from 'react-hot-toast';
+import axios from 'axios';
 
 import GridView from '@/components/GridView/GridView';
 import ProductCard from '@/components/ProductCard/ProductCard';
 import { CompleteReservationDataType, SafeUser } from '@/types/DataBaseModes/DataBaseModes'
-import axios from 'axios';
-import toast from 'react-hot-toast';
+
 import { API, TRIPS } from '@/constants/apiEndpoints';
 import { useRouter } from 'next/navigation';
-
-
-
+// TODO: change any type later
 type TripsListingProps = {
-    user: SafeUser | null;
-    trips: CompleteReservationDataType[] | null,
+    user:any;
+    trips: any,
 }
 
 const TripsListing: React.FC<TripsListingProps> = ({

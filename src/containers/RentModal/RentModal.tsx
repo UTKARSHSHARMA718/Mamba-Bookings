@@ -234,6 +234,10 @@ const RentModal: React.FC = () => {
     }
 
     const onSubmit: SubmitHandler<FieldValues> = async (payload) => {
+        if (!category || !location || !imageSrc || !title || !description) {
+            toast?.error("Some information has not been filled.");
+            return;
+        }
         setIsLoading(true);
         try {
             let url = API + LISTING;

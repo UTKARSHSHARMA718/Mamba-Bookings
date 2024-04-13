@@ -4,6 +4,7 @@ import nodemailer from "nodemailer";
 import { NotifyMessageToCustomer } from "@/Templates/Reservation/NotifyMessageToCustomer";
 import { NotifyMessageToOwner } from "@/Templates/Reservation/NotifyMessageToOwner";
 import { NotifyMessageToOwnerOnNewReview } from "@/Templates/Review/NotifyMessageToOwnerOnNewReview";
+import { NotifyMessageToNewUserCreated } from "@/Templates/User/NotifyMessageToNewUserCreated";
 
 type sendMailProps = {
   to: string;
@@ -60,6 +61,14 @@ export const sendMailForSuccessfulReservation = (
 
 export const sendMailForNewPropertyReview = (props: any) => {
   const htmlTemplate = handlebars?.compile(NotifyMessageToOwnerOnNewReview);
+  const updatedHtmlBody = htmlTemplate({
+    ...(props || {}),
+  });
+  return updatedHtmlBody;
+};
+
+export const sendMailForNewUserCreation = (props: any) => {
+  const htmlTemplate = handlebars?.compile(NotifyMessageToNewUserCreated);
   const updatedHtmlBody = htmlTemplate({
     ...(props || {}),
   });

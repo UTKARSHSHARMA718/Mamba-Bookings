@@ -5,17 +5,22 @@ import toast from 'react-hot-toast';
 import dynamic from 'next/dynamic';
 import axios from 'axios';
 import { FaBath } from "react-icons/fa";
+import { FaEdit } from "react-icons/fa";
 import { SlPeople } from "react-icons/sl";
 import { MdOutlineBedroomParent } from "react-icons/md";
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { differenceInCalendarDays, eachDayOfInterval } from 'date-fns';
 
 // TODO: remove shimmer UI for ListingInfo component
 import Avatar from '@/components/Avatar/Avatar';
+import Button from '@/components/Button/Button';
 import ListingReservations from '../ListingReservations/ListingReservations';
 import ShowCountProperties from '@/components/ShowCountProperties/ShowCountProperties';
 import useCountryInfo from '@/hooks/useCountryInfo';
+import useLocalStoarge from '@/hooks/useLocalStorage';
 import useLoginModal from '@/hooks/useLoginModal';
+import useQueryParams from '@/hooks/useQueryParams';
+import useRentModal from '@/hooks/useRentModal';
 
 import { Reservation } from '@prisma/client'
 import { compareString } from '@/libs/utils/util';
@@ -23,9 +28,10 @@ import { Resposnse } from '@/types/ApiResponse/ApiResponseTypes';
 import { NEW_RESERVATIONS_CREATED_MESSAGE } from '@/constants/generalMessage';
 import { CompleteListingDataType, SafeUser } from '@/types/DataBaseModes/DataBaseModes';
 import { GENERAL_ERROR_MESSAGE } from '@/constants/errorMessage';
-import { categoriesToRender, initialDateRange } from '@/constants/const';
+import { RENT_MODAL_DATA, categoriesToRender, initialDateRange } from '@/constants/const';
 import { API, RESERVATIONS } from '@/constants/apiEndpoints';
 import commonStyles from "@/common/styles/commonStyls.module.css";
+import styles from "./ListingInfo.module.css"
 
 
 
@@ -37,9 +43,14 @@ type ListingInfoTypes = {
 
 const ListingInfo: React.FC<ListingInfoTypes> = ({ reservations, currentUser, listingData }) => {
     const router = useRouter();
+    const currentPath = usePathname();
 
+    const { onOpen } = useRentModal();
+    const { setQueryParams } = useQueryParams();
+    const { storeValues } = useLocalStoarge();
     const { getCountryByValue } = useCountryInfo();
     const loginModal = useLoginModal();
+    const isShowEditButton = currentUser?.id === listingData?.userId;
 
     const Map = useMemo(() => dynamic(() => import('@/components/Map/Map'), {
         ssr: false
@@ -112,31 +123,71 @@ const ListingInfo: React.FC<ListingInfoTypes> = ({ reservations, currentUser, li
     const Icon = category?.icon;
     const isShowReservationOption = currentUser?.id !== listingData?.userId;
 
+    
+    const openRentModalHandler = () => {
+        setQueryParams({ queryName: "rent-modal", value: "edit", currentUrl: currentPath || "" });
+        const payload = {
+            category: listingData?.category,
+            location: listingData?.locationValue,
+            guestCount: listingData?.guestCount,
+            roomCount: listingData?.roomCount,
+            bathroomCount: listingData?.bathroomCount,
+            imageSrc: listingData?.imageSrc,
+            price: listingData?.price,
+            title: listingData?.title,
+            description: listingData?.description,
+        }
+        storeValues(RENT_MODAL_DATA, payload);
+        onOpen();
+    }
+
     return (
         <div className={`${commonStyles.container} p-6 flex-col md:flex-row flex gap-6 w-full m-auto`}>
             <div className='w-1/2 flex flex-col gap-6'>
-                <div
-                    style={{ maxWidth: "250px" }}
-                    className='flex flex-col gap-4'>
-                    <div className='flex gap-2 items-center justify-start'>
-                        <div>
-                            <p className='font-bold text-sm'>Hosted by {listingData?.user?.name}</p>
+                <div 
+                    className={` ${styles.buttonAndInfoContainer} 
+                                  flex 
+                                  flex-row 
+                                  items-start 
+                                  md:items-center 
+                                  md:flex-col 
+                                  gap-6 
+                                  justify-between 
+                            `}>
+                    <div
+                        style={{ maxWidth: "250px" }}
+                        className='flex flex-col gap-4'>
+                        <div className='flex gap-2 items-center justify-start'>
+                            <div>
+                                <p className='font-bold text-sm'>Hosted by {listingData?.user?.name}</p>
+                            </div>
+                            <Avatar />
                         </div>
-                        <Avatar />
+                        <div className={`
+                            flex
+                            flex-col
+                            items-start
+                            md:flex-row
+                            md:items-center
+                            gap-4
+                            justify-between
+                            `}
+                        >
+                            <ShowCountProperties propertyNames='guests' countValue={listingData?.guestCount!} icon={SlPeople} />
+                            <ShowCountProperties propertyNames='bathrooms' countValue={listingData?.bathroomCount!} icon={FaBath} />
+                            <ShowCountProperties propertyNames='rooms' countValue={listingData?.roomCount!} icon={MdOutlineBedroomParent} />
+                        </div>
                     </div>
-                    <div className={`
-                    flex
-                    flex-col
-                    items-start
-                    md:flex-row
-                    md:items-center
-                    gap-4
-                    justify-between
-                    `}
-                    >
-                        <ShowCountProperties propertyNames='guests' countValue={listingData?.guestCount!} icon={SlPeople} />
-                        <ShowCountProperties propertyNames='bathrooms' countValue={listingData?.bathroomCount!} icon={FaBath} />
-                        <ShowCountProperties propertyNames='rooms' countValue={listingData?.roomCount!} icon={MdOutlineBedroomParent} />
+                    <div>
+                        {
+                            isShowEditButton &&
+                            <Button
+                                label='Edit'
+                                onClick={openRentModalHandler}
+                                icon={FaEdit}
+                                customStyles='max-w-[200px] min-w-[200px]'
+                            />
+                        }
                     </div>
                 </div>
                 <hr />
@@ -158,15 +209,16 @@ const ListingInfo: React.FC<ListingInfoTypes> = ({ reservations, currentUser, li
             </div>
             <div className='w-1/2'>
                 {/* TODO: change the component name to something more meaningful */}
-                {isShowReservationOption && <ListingReservations
-                    price={listingData?.price || 0}
-                    totalPrice={totalPrice || 0}
-                    dateRange={dateRange}
-                    onSubmit={createNewReservation}
-                    disabled={isLoadingReservation}
-                    onDateChange={(value) => setDateRange(value)}
-                    disabledDate={disabledDates}
-                />}
+                {isShowReservationOption &&
+                    <ListingReservations
+                        price={listingData?.price || 0}
+                        totalPrice={totalPrice || 0}
+                        dateRange={dateRange}
+                        onSubmit={createNewReservation}
+                        disabled={isLoadingReservation}
+                        onDateChange={(value) => setDateRange(value)}
+                        disabledDate={disabledDates}
+                    />}
             </div>
         </div>
     )

@@ -1,21 +1,19 @@
 import React from 'react';
+import { redirect } from 'next/navigation';
 
 import EmptyPage from '@/components/EmptyPage/EmptyPage';
+import ReservationsListing from '@/containers/ReservationsListing/ReservationsListing';
 import { getCurrentUser } from '@/actions/getCurrentUser';
 import { getReservations } from '@/actions/getReservations';
-import ReservationsListing from '@/containers/ReservationsListing/ReservationsListing';
+import { HOME } from '@/constants/routeNames';
 
 const Reservations = async () => {
     const user = await getCurrentUser();
-
-    if (!user) {
-        return <EmptyPage
-            title='You are not authorized'
-            description='Please login to the website!'
-        />
-    }
-
     const allReservationsOfUser = await getReservations({ authorId: user?.id });
+
+    // if (!user) {
+    //     redirect(HOME)
+    // }
 
     if (!allReservationsOfUser || !allReservationsOfUser?.length) {
         return <EmptyPage
@@ -24,11 +22,9 @@ const Reservations = async () => {
         />
     }
 
-
-
     return (
         <ReservationsListing
-            {...{ user, allReservationsOfUser }}
+        {...{ user, allReservationsOfUser }}
         />
     )
 }

@@ -44,6 +44,7 @@ const useMarkFavourite = ({ listingId, currentUser }: MarkFavoriteTypes) => {
 
       if (user?.data?.ok) {
         router?.refresh();
+        toast?.success(user?.data?.message);
         return;
       }
       toast?.error("Something went wrong!");

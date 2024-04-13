@@ -15,9 +15,9 @@ import { GENERAL_ERROR_MESSAGE } from '@/constants/errorMessage';
 import { PAGE_SIZE } from '@/constants/const';
 
 type UpdatedListingType = Omit<CompleteListingDataType, "ratings"> & { isGuestFav: boolean } & { ratings: number }
-
+// TODO: change any type later
 type MainProductListingProps = {
-    allListings: UpdatedListingType[] | null;
+    allListings: any;
     user: SafeUser | null;
     isDeleteOptionAvailable?: boolean;
     totalListings?: number;
@@ -35,7 +35,7 @@ const MainProductListing: React.FC<MainProductListingProps> = ({
 
     const [isDataLoading, setIsDataLoading] = useState(false);
     const [pageNumber, setPageNumber] = useState(1);
-    const [data, setData] = useState(allListings);
+    const [data, setData] = useState(allListings||[]);
     const [isMounted, setIsMounted] = useState(false);
 
     const { deleteListingHandler, isLoading } = useDeleteListingApi({});
